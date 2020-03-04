@@ -27,11 +27,21 @@ dependencies:
   - relude
   - Win32
 
+library:
+  source-dirs:
+    - codegen/src
+  exposed-modules:
+    - IRTS.CodegenAHK
+
 executables:
   idris-ahk:
+    ghc-options:
+      - -rtsopts
     main: Main.hs
     source-dirs:
-      - src
+      - codegen/app
+    dependencies:
+      - idris-ahk
 
 default-extensions:
   - AutoDeriveTypeable

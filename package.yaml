@@ -34,7 +34,7 @@ library:
     - IRTS.CodegenAHK
 
 executables:
-  idris-ahk:
+  idris-codegen-ahk:
     ghc-options:
       - -rtsopts
     main: Main.hs

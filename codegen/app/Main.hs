@@ -40,5 +40,7 @@ cgMain opts = do
 
 main :: IO ()
 main = do
-  _ <- getOpts
-  showUsage
+  opts <- getOpts
+  if null (inputs opts)
+    then showUsage
+    else runMain (cgMain opts)

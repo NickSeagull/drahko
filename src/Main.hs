@@ -2,14 +2,14 @@
 
 module Main where
 
-import IRTS.CodegenEmpty
+import IRTS.CodegenAHK
 import IRTS.Compiler
 import Idris.AbsSyntax
 import Idris.ElabDecls
 import Idris.Main
 import Idris.Options
+import Relude
 import System.Environment
-import System.Exit
 
 data Opts
   = Opts
@@ -19,12 +19,12 @@ data Opts
 
 showUsage :: IO ()
 showUsage = do
-  putStrLn "Usage: idris-ahk <ibc-files> [-o <output-file>]"
+  putTextLn "Usage: idris-ahk <ibc-files> [-o <output-file>]"
   exitSuccess
 
 getOpts :: IO Opts
 getOpts =
-  process (Opts [] "a.out") <$> getArgs
+  process (Opts [] "output.ahk") <$> getArgs
   where
     process opts ("-o" : o : xs) = process (opts {output = o}) xs
     process opts (x : xs) = process (opts {inputs = x : inputs opts}) xs
@@ -36,7 +36,7 @@ cgMain opts = do
   _ <- loadInputs (inputs opts) Nothing
   mainProg <- elabMain
   ir <- compile (Via IBCFormat "ahk") (output opts) (Just mainProg)
-  runIO $ codegenEmpty ir
+  runIO $ codegenAHK ir
 
 main :: IO ()
 main = do

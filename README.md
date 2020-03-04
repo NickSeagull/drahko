@@ -7,7 +7,6 @@ a starting point for a real back end, by:
 
 * Forking this repository (with a more descriptive name)
 * Filling out `src/IRTS/CodegenEmpty.hs`, probably also renaming it
-* Renaming the binary from `idris-emptycg` to something appropriate for
+* Renaming the binary from `idris-ahk` to something appropriate for
   your back end
 * Putting any relevant run time support in `rts/`
-

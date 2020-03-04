@@ -1,0 +1,36 @@
+name: idris-ahk
+version: "0.0.1"
+maintainer: Nikita Tchayka <nick@booster.cloud>
+license: MIT
+github: NickSeagull/idris-ahk
+
+ghc-options:
+  - -Wall
+  - -freduction-depth=100
+  - -threaded
+  - -rtsopts
+  - -funbox-strict-fields
+
+ghc-prof-options:
+  - -auto-all
+  - -caf-all
+
+extra-source-files:
+  - ./test/data/**/*
+
+dependencies:
+  - base
+  - idris
+  - containers
+  - directory
+  - filepath
+  - haskeline >= 0.7
+  - mtl
+  - transformers
+  - Win32
+
+executables:
+  idris-ahk:
+    main: Main.hs
+    source-dirs:
+      - src

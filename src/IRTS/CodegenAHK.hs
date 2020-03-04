@@ -4,4 +4,6 @@ import IRTS.CodegenCommon
 import Relude
 
 codegenAHK :: CodeGenerator
-codegenAHK _ = putTextLn "Not implemented"
+codegenAHK CodegenInfo {simpleDecls} = do
+  let declarations = fmap fst simpleDecls
+  print declarations

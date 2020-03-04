@@ -1,10 +1,13 @@
-module IRTS.CodegenAHK (codegenAHK) where
+module IRTS.CodegenAHK where
 
-import IRTS.CodegenCommon
-import IRTS.Simplified
+import qualified AutoHotkey.Syntax as AHK
+import qualified IRTS.CodegenCommon as Idris
+import qualified Idris.Core.TT as Idris
 import Relude
 
-codegenAHK :: CodeGenerator
-codegenAHK CodegenInfo {simpleDecls} = do
-  let declarations = fmap snd simpleDecls
-  print declarations
+codegenAHK :: Idris.CodeGenerator
+codegenAHK Idris.CodegenInfo {..} =
+  print $ AHK.Name "Hi"
+
+name :: Idris.Name -> AHK.Name
+name = AHK.Name . toText . Idris.showCG

@@ -26,6 +26,7 @@ dependencies:
   - transformers
   - relude
   - Win32
+  - zenc
 
 library:
   source-dirs:

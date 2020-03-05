@@ -1,8 +1,8 @@
-name: idris-ahk
+name: idris-autohotkey
 version: "0.0.1"
 maintainer: Nikita Tchayka <nick@booster.cloud>
 license: MIT
-github: NickSeagull/idris-ahk
+github: NickSeagull/idris-autohotkey
 
 ghc-options:
   - -Wall
@@ -32,17 +32,17 @@ library:
   source-dirs:
     - codegen/src
   exposed-modules:
-    - IRTS.CodegenAHK
+    - IRTS.Codegenautohotkey
 
 executables:
-  idris-codegen-ahk:
+  idris-codegen-autohotkey:
     ghc-options:
       - -rtsopts
     main: Main.hs
     source-dirs:
       - codegen/app
     dependencies:
-      - idris-ahk
+      - idris-autohotkey
 
 default-extensions:
   - AutoDeriveTypeable

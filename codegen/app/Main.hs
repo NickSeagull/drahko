@@ -1,8 +1,6 @@
-{-# LANGUAGE DoAndIfThenElse #-}
-
 module Main where
 
-import IRTS.CodegenAHK
+import IRTS.CodegenAutoHotkey
 import IRTS.Compiler
 import Idris.AbsSyntax
 import Idris.ElabDecls

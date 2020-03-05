@@ -1,4 +1,4 @@
-module IRTS.CodegenAHK where
+module IRTS.CodegenAutoHotkey where
 
 import qualified AutoHotkey.Syntax as AHK
 import qualified IRTS.CodegenCommon as Idris

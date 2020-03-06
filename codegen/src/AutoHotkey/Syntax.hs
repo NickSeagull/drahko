@@ -4,9 +4,13 @@
 module AutoHotkey.Syntax where
 
 import Relude
+import Text.Encoding.Z (zEncodeString)
 
 newtype Name = Name {unName :: Text}
   deriving (Eq, Show, IsString, Generic, Ord)
+
+name :: String -> Name
+name = Name . toText . zEncodeString
 
 data BinaryOperator
   = Add

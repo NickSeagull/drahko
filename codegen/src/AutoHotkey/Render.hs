@@ -105,6 +105,9 @@ renderProgram :: AST.Program -> Doc
 renderProgram (AST.Program statements) =
   stack (fmap renderStatement statements)
 
+renderToText :: Doc -> Text
+renderToText = toText . pretty 200
+
 parenList :: [Doc] -> Doc
 parenList = parens . commasep
 

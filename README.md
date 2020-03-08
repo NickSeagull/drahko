@@ -1,4 +1,4 @@
-# Idris AutoHotkey 🐉⌨
+# 🐉⌨ Idris AutoHotkey
 
 > ⚠ **DISCLAIMER:** This project is in it's very early days, and it doesn't support most of stuff from Idris or AutoHotkey. The only tested code is the one in [`examples/simple.idr`](examples/simple.idr), which is a Hello world app.
 
@@ -11,6 +11,23 @@ By generating the code automatically, we free ourselves from AutoHotkey's silent
 
 The Idris typechecker should remove the rest of runtime errors.
 
-## Acknowledgements
+## 🏗 Building
+
+1. Follow the steps on how to install Idris dependencies using Stack [on the official Idris wiki](https://github.com/idris-lang/Idris-dev/wiki/Idris-on-Windows#stack-haskell-platform-tool-installation).
+2. Clone the repo
+   ```text
+   git clone git@github.com:NickSeagull/idris-autohotkey.git
+   cd idris-autohotkey
+   ```
+3. Build the project
+   ```text
+   stack build
+   ```
+4. Try to compile the example
+   ```text
+   stack exec -- idris --codegen autohotkey .\examples\simple.idr -o .\examples\simple.ahk
+   ```
+
+## 🙏 Acknowledgements
 
 This project is largely based from [owickstrom](https://github.com/owickstrom)'s [`idris-vimscript`](https://github.com/owickstrom/idris-vimscript), licensed under BSD3 license. Thanks for keeping the repo even though it is not maintained, as it was the key for starting this project.

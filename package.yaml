@@ -28,6 +28,7 @@ dependencies:
   - relude
   - Win32
   - zenc
+  - text
 
 library:
   source-dirs:

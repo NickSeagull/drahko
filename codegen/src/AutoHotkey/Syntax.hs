@@ -37,6 +37,7 @@ data Expression
   | Literal Literal
   | Variable Name
   | Apply Expression [Expression]
+  | Projection Expression Expression
   deriving (Eq, Show)
 
 type Block = [Statement]

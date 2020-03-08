@@ -1,6 +1,7 @@
 module AutoHotkey.Render where
 
 import qualified AutoHotkey.Syntax as AST
+import qualified Data.Text as Text
 import Relude hiding (empty)
 import Text.PrettyPrint.Mainland
 
@@ -21,7 +22,8 @@ renderLiteral :: AST.Literal -> Doc
 renderLiteral = \case
   AST.Integer i -> integer i
   AST.Floating d -> double d
-  AST.String txt -> strictText txt
+  AST.String txt ->
+    strictText $ Text.replace "\\" "`" $ show txt
   AST.List expressions -> do
     let renderedExpressions = fmap renderExpression expressions
     parenList renderedExpressions
@@ -35,6 +37,7 @@ renderExpression = \case
   AST.Literal lit -> renderLiteral lit
   AST.Variable name -> renderName name
   AST.Apply expr args -> renderExpression expr <> parenList (fmap renderExpression args)
+  AST.Projection expr projExpr -> renderExpression expr <> brackets (renderExpression projExpr)
 
 renderName :: AST.Name -> Doc
 renderName (AST.Name name) = strictText name
@@ -83,12 +86,12 @@ renderStatement = \case
     stack
       [ renderName name <> parenList (fmap renderName args),
         lbrace,
-        renderBlock block,
+        indent 4 $ renderBlock block,
         rbrace
       ]
   AST.Call name params ->
     "Func"
-      <> parens (renderName name)
+      <> parens (quoted $ renderName name)
       <> dot
       <> "Bind"
       <> parenList (fmap renderExpression params)
@@ -106,10 +109,13 @@ renderProgram (AST.Program statements) =
   stack (fmap renderStatement statements)
 
 renderToText :: Doc -> Text
-renderToText = toText . pretty 200
+renderToText = toText . pretty 9999
 
 parenList :: [Doc] -> Doc
 parenList = parens . commasep
 
 bracketList :: [Doc] -> Doc
 bracketList = brackets . commasep
+
+quoted :: Doc -> Doc
+quoted = enclose dquote dquote

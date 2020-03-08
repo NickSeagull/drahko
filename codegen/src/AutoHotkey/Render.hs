@@ -86,6 +86,7 @@ renderStatement = \case
     stack
       [ renderName name <> parenList (fmap renderName args),
         lbrace,
+        indent 4 "global",
         indent 4 $ renderBlock block,
         rbrace
       ]

@@ -10,7 +10,7 @@ newtype Name = Name {unName :: Text}
   deriving (Eq, Show, IsString, Generic, Ord)
 
 name :: String -> Name
-name = Name . toText . zEncodeString
+name nameString = Name $ "idris_" <> toText (zEncodeString nameString)
 
 data BinaryOperator
   = Add

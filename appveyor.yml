@@ -1,0 +1,30 @@
+clone_folder: "c:\\WORK"
+clone_depth: 5
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+platform:
+  - x86_64
+
+cache:
+  - "C:\\SR"
+  - .stack-work
+
+environment:
+  matrix:
+    - GHCVER: 8.4.4
+
+install:
+  - choco source add -n mistuke -s https://www.myget.org/F/mistuke/api/v2
+  - choco install -y haskell-stack
+  - stack exec -- pacman -S make
+  - refreshenv
+
+before_build:
+  - stack --version
+  - stack setup
+
+build_script:
+  - stack build
+  - stack test

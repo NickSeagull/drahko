@@ -18,12 +18,12 @@ environment:
 install:
   - choco source add -n mistuke -s https://www.myget.org/F/mistuke/api/v2
   - choco install -y haskell-stack
-  - stack exec -- pacman -S make
+  - stack setup
+  - stack exec -- pacman --noconfirm -S make
   - refreshenv
 
 before_build:
   - stack --version
-  - stack setup
 
 build_script:
   - stack build

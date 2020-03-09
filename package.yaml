@@ -47,6 +47,18 @@ executables:
     dependencies:
       - idris-autohotkey
 
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - codegen/test
+    dependencies:
+      - idris-autohotkey
+      - hspec
+      - hspec-discover
+      - hw-hspec-hedgehog
+    build-tools: hspec-discover
+
 default-extensions:
   - AutoDeriveTypeable
   - BangPatterns

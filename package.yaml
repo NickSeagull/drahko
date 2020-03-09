@@ -29,6 +29,7 @@ dependencies:
   - Win32
   - zenc
   - text
+  - file-embed
 
 library:
   source-dirs:

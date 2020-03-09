@@ -1,5 +1,6 @@
 module IRTS.CodegenAutoHotkey where
 
+import qualified AutoHotkey.RTS as AHK
 import qualified AutoHotkey.Render as AHK
 import qualified AutoHotkey.Syntax as AHK
 import qualified IRTS.CodegenCommon as Idris
@@ -12,8 +13,7 @@ codegenAHK :: Idris.CodeGenerator
 codegenAHK Idris.CodegenInfo {..} = do
   let program = generateProgram simpleDecls
   let renderedProgram = AHK.renderToText $ AHK.renderProgram program
-  let msgBoxFunc = "MsgBox(x)\n{\n  MsgBox % x\n}\n"
-  writeFile outputFile ("#Warn\n" <> msgBoxFunc <> renderedProgram)
+  writeFile outputFile (AHK.rts <> renderedProgram)
 
 generateProgram :: [(Idris.Name, Idris.SDecl)] -> AHK.Program
 generateProgram definitions = do
@@ -115,7 +115,7 @@ generateConstant = \case
 
 generatePrimitiveFunction :: Idris.PrimFn -> [AHK.Expression] -> AHK.Expression
 generatePrimitiveFunction Idris.LWriteStr [_, str] =
-  AHK.Apply (AHK.Variable "MsgBox") [str]
+  AHK.Apply (AHK.Variable "idris_putStr") [str]
 generatePrimitiveFunction (Idris.LExternal n) params =
   AHK.Apply (AHK.Variable $ AHK.name (Idris.showCG n)) params
 generatePrimitiveFunction x _ =

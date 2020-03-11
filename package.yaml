@@ -35,7 +35,7 @@ library:
   source-dirs:
     - codegen/src
   exposed-modules:
-    - IRTS.CodegenAutoHotkey
+    - IdrisCG.AutoHotkey
 
 executables:
   idris-codegen-autohotkey:
@@ -46,6 +46,18 @@ executables:
       - codegen/app
     dependencies:
       - idris-autohotkey
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - codegen/test
+    dependencies:
+      - idris-autohotkey
+      - hspec
+      - hspec-discover
+      - hw-hspec-hedgehog
+    build-tools: hspec-discover
 
 default-extensions:
   - AutoDeriveTypeable

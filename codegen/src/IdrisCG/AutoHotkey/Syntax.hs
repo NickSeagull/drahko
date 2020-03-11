@@ -1,16 +1,9 @@
--- | AutoHotkey AST definition, this is mostly taken from
--- `idris-vimscript`'s VimScript AST definition:
--- https://github.com/owickstrom/idris-vimscript/blob/master/codegen/src/Vimscript/AST.hs
-module AutoHotkey.Syntax where
+module IdrisCG.AutoHotkey.Syntax where
 
 import Relude
-import Text.Encoding.Z (zEncodeString)
 
 newtype Name = Name {unName :: Text}
   deriving (Eq, Show, IsString, Generic, Ord)
-
-name :: String -> Name
-name nameString = Name $ "idris_" <> toText (zEncodeString nameString)
 
 data BinaryOperator
   = Add

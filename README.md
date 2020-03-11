@@ -27,7 +27,7 @@ The Idris typechecker should remove the rest of runtime errors.
    ```
 4. Try to compile the example
    ```text
-   stack exec -- idris -i lib .\examples\simple.idr --codegen autohotkey -o .\examples\simple.ahk
+   stack exec -- idris -i lib .\examples\HelloWorld.idr --codegen autohotkey -o .\examples\HelloWorld.ahk
    ```
 
 ## 🙏 Acknowledgements

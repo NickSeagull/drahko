@@ -1,6 +1,6 @@
 module IdrisCG.AutoHotkey.Generate.Block where
 
-import qualified IRTS.Lang as Idris (LVar (..))
+import qualified IRTS.Lang as Idris (FDesc (..), LVar (..))
 import qualified IRTS.Simplified as Idris (SAlt (..), SExp (..))
 import qualified IdrisCG.AutoHotkey.Generate.Constant as Constant
 import qualified IdrisCG.AutoHotkey.Generate.Name as Name
@@ -49,8 +49,18 @@ generate returning expression = case expression of
   Idris.SChkCase e alts -> do
     let e' = Variable.generate e
     conditionals returning e' alts
+  Idris.SForeign _ f params -> do
+    let params' = map (Variable.generate . snd) params
+    foreign' returning f params'
   otherExpression ->
     error ("\nExpression not implemented \n\n\t" <> show otherExpression <> "\n")
+
+foreign' :: (Expression -> Statement) -> Idris.FDesc -> [Expression] -> Block
+foreign' _ (Idris.FCon name) params =
+  case (show name, params) of
+    (other, p) ->
+      error ("\nForeign function not supported\n\n\t" <> show other <> " " <> show p)
+foreign' _ f _ = error ("Foreign function not supported: " <> show f)
 
 conditionals :: (Expression -> Statement) -> Expression -> [Idris.SAlt] -> Block
 conditionals returning caseExpr alts =

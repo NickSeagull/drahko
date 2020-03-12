@@ -10,5 +10,7 @@ generate Idris.LWriteStr [_, str] =
   Apply (Variable "idris_putStr") [str]
 generate (Idris.LExternal n) params =
   Apply (Variable $ Name.generate n) params
+generate Idris.LCrash args =
+  Apply (Variable "idris_crash") args
 generate x _ =
   error ("\nPrimitive function not implemented \n\n\t" <> show x <> "\n")

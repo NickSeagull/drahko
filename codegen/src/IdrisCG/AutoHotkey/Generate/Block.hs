@@ -63,6 +63,8 @@ foreign' _ (Idris.FCon name) params =
       error ("\nForeign function not supported\n\n\t" <> show other <> " " <> show p)
 foreign' returning (Idris.FApp name params) others =
   case (show name, params) of
+    ("AHK_Function", [Idris.FStr functionName]) ->
+      [returning (Apply (Variable $ Name $ toText functionName) others)]
     (other, p) ->
       error ("\nForeign function not supported\n\n\t" <> show other <> " " <> show p <> "\n\n\t" <> show others)
 foreign' _ f _ = error ("Foreign function not supported: " <> show f)

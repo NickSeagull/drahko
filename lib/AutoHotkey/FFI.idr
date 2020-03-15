@@ -21,7 +21,6 @@ mutual
     AHK_Raw    : AHK_Types (Raw a)
     AHK_FnT    : AHK_FnTypes t -> AHK_Types (AutoHotkeyFn t)
 
-mutual
   public export
   data AHK_Foreign
     = AHK_DotAccess String String

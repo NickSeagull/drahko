@@ -23,7 +23,9 @@ builtin name =
 msgBox : String -> AHK_IO ()
 msgBox = builtin "MsgBox" (String -> AHK_IO ())
 
-twice : (Int -> Int) -> Int -> IO Int
-twice =
+twice : (Int -> Int) -> Int -> AHK_IO Int
+twice f x =
   foreign FFI_AHK (AHK_Function "twice")
-    ((Int -> Int) -> Int -> IO Int)
+    (AutoHotkeyFn (Int -> Int) -> Int -> AHK_IO Int)
+    (MkAutoHotkeyFn f)
+    x

@@ -23,6 +23,7 @@ builtin name =
 msgBox : String -> AHK_IO ()
 msgBox = builtin "MsgBox" (String -> AHK_IO ())
 
-hotkey : String -> AHK_IO () -> AHK_IO ()
-hotkey hotkeyStr action =
-  foreign FFI_AHK (AHK_HotKeyDefinition hotkeyStr action) (AHK_IO ())
+twice : (Int -> Int) -> Int -> IO Int
+twice =
+  foreign FFI_AHK (AHK_Function "twice")
+    ((Int -> Int) -> Int -> IO Int)

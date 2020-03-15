@@ -13,6 +13,7 @@ import IdrisCG.AutoHotkey.Syntax
     ConditionalStatement (..),
     Expression (..),
     Literal (..),
+    Name (..),
     Statement (..),
   )
 import Relude
@@ -57,6 +58,10 @@ generate returning expression = case expression of
 
 foreign' :: (Expression -> Statement) -> Idris.FDesc -> [Expression] -> Block
 foreign' _ (Idris.FCon name) params =
+  case (show name, params) of
+    (other, p) ->
+      error ("\nForeign function not supported\n\n\t" <> show other <> " " <> show p)
+foreign' returning (Idris.FApp name params) _ =
   case (show name, params) of
     (other, p) ->
       error ("\nForeign function not supported\n\n\t" <> show other <> " " <> show p)

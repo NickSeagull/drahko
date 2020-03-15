@@ -26,7 +26,6 @@ mutual
   data AHK_Foreign
     = AHK_DotAccess String String
     | AHK_Function String
-    | AHK_HotKeyDefinition String (AHK_IO ())
 
   %error_reverse
   public export

@@ -12,3 +12,4 @@ bugtracker = https://github.com/NickSeagull/idris-autohotkey/issues
 
 sourcedir = lib
 modules   = AutoHotkey.Builtins
+          , AutoHotkey.FFI

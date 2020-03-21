@@ -23,7 +23,10 @@ renderLiteral = \case
   Syntax.Integer i -> integer i
   Syntax.Floating d -> double d
   Syntax.String txt ->
-    strictText $ Text.replace "\\" "`" $ show txt
+    show txt
+      & Text.replace "\\" "`"
+      & Text.replace "`\"" "\"\""
+      & strictText
   Syntax.List expressions -> do
     let renderedExpressions = fmap renderExpression expressions
     parenList renderedExpressions
@@ -104,6 +107,8 @@ renderStatement = \case
     renderName name <+> ":=" <+> renderExpression expression
   Syntax.SubroutineCall name expression ->
     renderName name <> comma <+> commasep (fmap renderExpression expression)
+  Syntax.NoOp ->
+    ""
 
 renderProgram :: Syntax.Program -> Doc
 renderProgram (Syntax.Program statements) =

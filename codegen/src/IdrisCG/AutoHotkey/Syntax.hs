@@ -53,7 +53,6 @@ data Statement
   | Condition ConditionalStatement
   | Assignment Name Expression
   | NoOp
-  | SubroutineCall Name [Expression]
   | Command Name [Expression]
   deriving (Eq, Show)
 

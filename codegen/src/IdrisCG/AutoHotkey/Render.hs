@@ -105,7 +105,7 @@ renderStatement = \case
     renderConditionalStatement conditionalStatement
   Syntax.Assignment name expression ->
     renderName name <+> ":=" <+> renderExpression expression
-  Syntax.SubroutineCall name expression ->
+  Syntax.Command name expression ->
     renderName name <> comma <+> commasep (fmap renderExpression expression)
   Syntax.NoOp ->
     ""

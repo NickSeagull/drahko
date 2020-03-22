@@ -54,6 +54,7 @@ data Statement
   | Assignment Name Expression
   | NoOp
   | SubroutineCall Name [Expression]
+  | Command Name [Expression]
   deriving (Eq, Show)
 
 newtype Program = Program [Statement]

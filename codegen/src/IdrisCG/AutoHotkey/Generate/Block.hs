@@ -29,7 +29,13 @@ generate returning expression = case expression of
     let func = PrimFunction.generate primFn ahkArgs
     [returning func]
   Idris.LForeign a b c -> do
-    let args = "Attempted to call FFI: " <> show a <> ", " <> show b <> ", " <> show c
+    let args =
+          unlines
+            [ "Attempted to call FFI: ",
+              show a,
+              show b,
+              show c
+            ]
     [Call (Name "idris_putStr") [Literal $ String args]]
   otherExpression ->
     error ("\nExpression not implemented \n\n\t" <> show (toConstr otherExpression) <> "\n")

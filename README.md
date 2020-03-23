@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b5r11wcau0upomgv?svg=true)](https://ci.appveyor.com/project/NickSeagull/idris-autohotkey)
 
-> ⚠ **DISCLAIMER:** This project is in it's very early days, and it doesn't support most of stuff from Idris or AutoHotkey. The only tested code is the one in [`examples/simple.idr`](examples/simple.idr), which is a Hello world app.
+> ⚠ **DISCLAIMER:** This project is in it's very early days, and it doesn't support most of stuff from Idris or AutoHotkey. The only tested code is the one in [`examples/HelloWorld.idr`](examples/HelloWorld.idr), which is a Hello world app.
 
 ![idris autohotkey screenshot](https://pbs.twimg.com/media/ESnLF6SWsAIhzRF?format=png&name=small)
 

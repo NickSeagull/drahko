@@ -24,7 +24,7 @@ mutual
   public export
   data AHK_Foreign
     = AHK_DotAccess String String
-    | AHK_Function String
+    | AHK_Command String
 
   %error_reverse
   public export

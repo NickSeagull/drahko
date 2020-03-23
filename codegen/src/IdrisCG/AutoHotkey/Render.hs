@@ -105,8 +105,9 @@ renderStatement = \case
     renderConditionalStatement conditionalStatement
   Syntax.Assignment name expression ->
     renderName name <+> ":=" <+> renderExpression expression
-  Syntax.SubroutineCall name expression ->
-    renderName name <> comma <+> commasep (fmap renderExpression expression)
+  Syntax.Command name expression -> do
+    let prependPercent x = "%" <+> x
+    renderName name <> comma <+> commasep (fmap (prependPercent . renderExpression) expression)
   Syntax.NoOp ->
     ""
 

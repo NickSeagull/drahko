@@ -33,6 +33,23 @@ generate returning expression = case expression of
   Idris.LForeign _ foreignName params -> do
     let ahkArgs = map (genExpr . snd) params
     genForeign returning foreignName ahkArgs
+  Idris.LLet name expr restExpressions -> do
+    let ahkName = Name.generate name
+    let ahkBind = generate (Let ahkName) expr
+    ahkBind <> generate returning restExpressions
+  Idris.LConst constExpr ->
+    [returning $ Constant.generate constExpr]
+  Idris.LV name -> do
+    let ahkName = Name.generate name
+    [returning $ Apply (Variable ahkName) []]
+  Idris.LCase caseType exp alts ->
+    error $
+      unlines
+        [ "-------- LCase ----------",
+          show caseType,
+          show exp,
+          show alts
+        ]
   otherExpression ->
     error ("\nExpression not implemented \n\n\t" <> show (toConstr otherExpression) <> "\n")
 

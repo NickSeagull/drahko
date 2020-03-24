@@ -38,8 +38,12 @@ renderExpression = \case
       <+> renderBinaryOperator op
       <+> parens (renderExpression rhs)
   Syntax.Literal lit -> renderLiteral lit
-  Syntax.Variable name -> renderName name
-  Syntax.Apply expr args -> renderExpression expr <> parenList (fmap renderExpression args)
+  Syntax.Variable name -> "this" <> dot <> renderName name
+  Syntax.Apply expr args ->
+    renderExpression expr
+      <> dot
+      <> "run"
+      <> parenList (fmap renderExpression args)
   Syntax.Projection expr projExpr -> renderExpression expr <> brackets (renderExpression projExpr)
 
 renderName :: Syntax.Name -> Doc
@@ -74,7 +78,8 @@ renderConditionalStatement (Syntax.ConditionalStatement ifCase elseIfCases maybe
 
 renderStatement :: Syntax.Statement -> Doc
 renderStatement = \case
-  Syntax.Let name expression -> renderName name <+> ":=" <+> renderExpression expression
+  Syntax.Let name expression ->
+    "this" <> dot <> renderName name <+> ":=" <+> renderExpression expression
   Syntax.Return expression -> "return" <+> renderExpression expression
   Syntax.While expression block ->
     stack
@@ -85,26 +90,33 @@ renderStatement = \case
       ]
   Syntax.Break -> "break"
   Syntax.Continue -> "continue"
+  -- Functions are implemented as classes in order to maintain scoping between lambdas
   Syntax.Function name args block ->
     stack
-      [ renderName name <> parenList (fmap renderName args),
+      [ "class" <+> renderName name,
         lbrace,
-        indent 4 "global",
-        indent 4 $ renderBlock block,
+        indent 4 $
+          stack
+            [ "run" <> parenList (fmap renderName args),
+              lbrace,
+              indent 4 "global",
+              indent 4 $ foldMap (\n -> "this" <> dot <> renderName n <+> ":=" <+> renderName n <> "\n") args,
+              indent 4 $ renderBlock block,
+              rbrace
+            ],
         rbrace
       ]
   Syntax.Call name params ->
-    "Func"
-      <> parens (quoted $ renderName name)
+    "this"
       <> dot
-      <> "Bind"
+      <> renderName name
+      <> dot
+      <> "run"
       <> parenList (fmap renderExpression params)
-      <> dot
-      <> "Call()"
   Syntax.Condition conditionalStatement ->
     renderConditionalStatement conditionalStatement
   Syntax.Assignment name expression ->
-    renderName name <+> ":=" <+> renderExpression expression
+    "this" <> dot <> renderName name <+> ":=" <+> renderExpression expression
   Syntax.Command name expression -> do
     let prependPercent x = "%" <+> x
     renderName name <> comma <+> commasep (fmap (prependPercent . renderExpression) expression)

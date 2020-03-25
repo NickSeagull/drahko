@@ -21,7 +21,7 @@ generate returning expression = case expression of
   Idris.LForce expr ->
     generate returning expr
   Idris.LApp _ (Idris.LV name) args -> do
-    let ahkName = Name.generate name
+    let ahkName = Variable (Name.generate name)
     let ahkArgs = map genExpr args
     [Call ahkName ahkArgs]
   Idris.LNothing ->
@@ -34,8 +34,8 @@ generate returning expression = case expression of
     let ahkArgs = map (genExpr . snd) params
     genForeign returning foreignName ahkArgs
   Idris.LLet name expr restExpressions -> do
-    let ahkName = Name.generate name
-    let ahkBind = generate (Let ahkName) expr
+    let ahkName = Variable (Name.generate name)
+    let ahkBind = generate (Assignment ahkName) expr
     ahkBind <> generate returning restExpressions
   Idris.LConst constExpr ->
     [returning $ Constant.generate constExpr]

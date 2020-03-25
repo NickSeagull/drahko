@@ -11,6 +11,6 @@ generate :: [(IdrisCore.Name, Idris.LDecl)] -> Syntax.Program
 generate definitions = do
   let functions = fmap TopLevel.generate definitions
   let mainName = Name.generate (IdrisCore.sMN 0 "runMain")
-  let start = Syntax.Call mainName []
+  let start = Syntax.Call (Syntax.Variable mainName) []
   let statements = functions <> [start]
   Syntax.Program statements

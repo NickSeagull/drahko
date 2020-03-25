@@ -31,6 +31,7 @@ data Expression
   | Variable Name
   | Apply Expression [Expression]
   | Projection Expression Expression
+  | DotAccess Expression Expression
   deriving (Eq, Show)
 
 type Block = [Statement]
@@ -43,17 +44,17 @@ data ConditionalStatement
   deriving (Eq, Show)
 
 data Statement
-  = Let Name Expression
-  | Return Expression
+  = Return Expression
   | While Expression Block
   | Break
   | Continue
   | Function Name [Name] Block
-  | Call Name [Expression]
+  | Call Expression [Expression]
   | Condition ConditionalStatement
-  | Assignment Name Expression
+  | Assignment Expression Expression
   | NoOp
   | Command Name [Expression]
+  | Class Name (Maybe Name) [Statement]
   deriving (Eq, Show)
 
 newtype Program = Program [Statement]

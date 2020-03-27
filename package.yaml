@@ -30,6 +30,7 @@ dependencies:
   - zenc
   - text
   - file-embed
+  - uuid
 
 library:
   source-dirs:

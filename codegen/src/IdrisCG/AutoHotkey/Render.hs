@@ -39,8 +39,12 @@ renderExpression = \case
       <+> parens (renderExpression rhs)
   Syntax.Literal lit -> renderLiteral lit
   Syntax.Variable name -> renderName name
-  Syntax.Apply expr args -> renderExpression expr <> parenList (fmap renderExpression args)
+  Syntax.Apply expr args ->
+    renderExpression expr
+      <> parenList (fmap renderExpression args)
   Syntax.Projection expr projExpr -> renderExpression expr <> brackets (renderExpression projExpr)
+  Syntax.DotAccess e1 e2 ->
+    renderExpression e1 <> dot <> renderExpression e2
 
 renderName :: Syntax.Name -> Doc
 renderName (Syntax.Name name) = strictText name
@@ -74,7 +78,6 @@ renderConditionalStatement (Syntax.ConditionalStatement ifCase elseIfCases maybe
 
 renderStatement :: Syntax.Statement -> Doc
 renderStatement = \case
-  Syntax.Let name expression -> renderName name <+> ":=" <+> renderExpression expression
   Syntax.Return expression -> "return" <+> renderExpression expression
   Syntax.While expression block ->
     stack
@@ -93,21 +96,23 @@ renderStatement = \case
         indent 4 $ renderBlock block,
         rbrace
       ]
-  Syntax.Call name params ->
-    "Func"
-      <> parens (quoted $ renderName name)
-      <> dot
-      <> "Bind"
+  Syntax.Call nameExpr params ->
+    renderExpression nameExpr
       <> parenList (fmap renderExpression params)
-      <> dot
-      <> "Call()"
   Syntax.Condition conditionalStatement ->
     renderConditionalStatement conditionalStatement
-  Syntax.Assignment name expression ->
-    renderName name <+> ":=" <+> renderExpression expression
+  Syntax.Assignment nameExpression expression ->
+    renderExpression nameExpression <+> ":=" <+> renderExpression expression
   Syntax.Command name expression -> do
     let prependPercent x = "%" <+> x
     renderName name <> comma <+> commasep (fmap (prependPercent . renderExpression) expression)
+  Syntax.Class className extendsName block ->
+    stack
+      [ "class" <+> renderName className <+> maybe "" (\n -> "extends" <+> renderName n) extendsName,
+        lbrace,
+        indent 4 $ renderBlock block,
+        rbrace
+      ]
   Syntax.NoOp ->
     ""
 

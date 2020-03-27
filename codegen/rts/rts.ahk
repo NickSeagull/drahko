@@ -5,7 +5,7 @@ idris_putStr(x)
   MsgBox % x
 }
 
-idris_TheWorld()
+TheWorld()
 {
   return ""
 }

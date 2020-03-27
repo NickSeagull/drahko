@@ -4,13 +4,15 @@ import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as IdrisCore
 import qualified IdrisCG.AutoHotkey.Generate.Name as Name
 import qualified IdrisCG.AutoHotkey.Generate.TopLevel as TopLevel
-import qualified IdrisCG.AutoHotkey.Syntax as Syntax
+import IdrisCG.AutoHotkey.Syntax
 import Relude
 
-generate :: [(IdrisCore.Name, Idris.LDecl)] -> Syntax.Program
+generate :: MonadIO m => [(IdrisCore.Name, Idris.LDecl)] -> m Program
 generate definitions = do
-  let functions = fmap TopLevel.generate definitions
+  programName <- Name.random
+  functions <- traverse (TopLevel.generate programName) definitions
   let mainName = Name.generate (IdrisCore.sMN 0 "runMain")
-  let start = Syntax.Call (Syntax.Variable mainName) []
-  let statements = functions <> [start]
-  Syntax.Program statements
+  let start = Call (DotAccess (Variable programName) (DotAccess (Variable mainName) (Variable $ Name "run"))) []
+  let mainClass = Class programName Nothing functions
+  let statements = [mainClass, start]
+  pure $ Program statements

@@ -3,6 +3,7 @@ module IdrisCG.AutoHotkey.Generate.Block where
 import Data.Data
 import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
+import IdrisCG.AutoHotkey.Generate.Common
 import qualified IdrisCG.AutoHotkey.Generate.Constant as Constant
 import qualified IdrisCG.AutoHotkey.Generate.Name as Name
 import IdrisCG.AutoHotkey.Generate.Orphans ()
@@ -10,7 +11,6 @@ import qualified IdrisCG.AutoHotkey.Generate.PrimFunction as PrimFunction
 import IdrisCG.AutoHotkey.Syntax
   ( Block,
     Expression (..),
-    Literal (..),
     Name (..),
     Statement (..),
   )
@@ -21,11 +21,12 @@ generate returning expression = case expression of
   Idris.LForce expr ->
     generate returning expr
   Idris.LApp _ (Idris.LV name) args -> do
-    let ahkName = Variable (Name.generate name)
+    let ahkClassName = Variable (Name.generate name)
+    let runName = Variable (Name "run")
     let ahkArgs = map genExpr args
-    [Call ahkName ahkArgs]
+    [Call (thisDot (DotAccess ahkClassName runName)) ahkArgs]
   Idris.LNothing ->
-    [returning $ Literal (String "")]
+    [returning nullExpr]
   Idris.LOp primFn args -> do
     let ahkArgs = map genExpr args
     let func = PrimFunction.generate primFn ahkArgs
@@ -35,19 +36,19 @@ generate returning expression = case expression of
     genForeign returning foreignName ahkArgs
   Idris.LLet name expr restExpressions -> do
     let ahkName = Variable (Name.generate name)
-    let ahkBind = generate (Assignment ahkName) expr
+    let ahkBind = generate (Assignment (thisDot ahkName)) expr
     ahkBind <> generate returning restExpressions
   Idris.LConst constExpr ->
     [returning $ Constant.generate constExpr]
   Idris.LV name -> do
     let ahkName = Name.generate name
-    [returning $ Apply (Variable ahkName) []]
-  Idris.LCase caseType exp alts ->
+    [returning $ thisDot (Variable ahkName)]
+  Idris.LCase caseType expr alts ->
     error $
       unlines
         [ "-------- LCase ----------",
           show caseType,
-          show exp,
+          show expr,
           show alts
         ]
   otherExpression ->
@@ -73,15 +74,15 @@ genForeign _ other _ =
 genExpr :: Idris.LExp -> Expression
 genExpr (Idris.LV name) = do
   let ahkName = Name.generate name
-  Variable ahkName
+  thisDot (Variable ahkName)
 genExpr (Idris.LApp _ (Idris.LV name) args) = do
   let ahkName = Name.generate name
   let ahkArgs = map genExpr args
-  Apply (Variable ahkName) ahkArgs
+  Apply (thisDot $ Variable ahkName) ahkArgs
 genExpr (Idris.LCon _ _ name args) = do
   let ahkName = Name.generate name
   let ahkArgs = map genExpr args
-  Apply (Variable ahkName) ahkArgs
+  Apply (thisDot $ Variable ahkName) ahkArgs
 genExpr (Idris.LConst c) =
   Constant.generate c
 genExpr other =

@@ -1,6 +1,6 @@
-module IdrisCG.AutoHotkey.Generate.Common where
+module Drahko.Generate.Common where
 
-import IdrisCG.AutoHotkey.Syntax
+import Drahko.Syntax
 import Relude
 
 thisDot :: Expression -> Expression

@@ -1,9 +1,9 @@
-module IdrisCG.AutoHotkey where
+module Drahko where
 
+import qualified Drahko.Generate.Program as Program
+import qualified Drahko.RTS as RTS
+import qualified Drahko.Render as Render
 import qualified IRTS.CodegenCommon as Idris
-import qualified IdrisCG.AutoHotkey.Generate.Program as Program
-import qualified IdrisCG.AutoHotkey.RTS as RTS
-import qualified IdrisCG.AutoHotkey.Render as Render
 import Relude
 
 codegenAHK :: Idris.CodeGenerator

@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module IdrisCG.AutoHotkey.RTS where
+module Drahko.RTS where
 
 import Data.FileEmbed
 import Relude

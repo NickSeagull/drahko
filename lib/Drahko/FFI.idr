@@ -33,8 +33,8 @@ mutual
 
   %error_reverse
   public export
-  AHK_IO : Type -> Type
-  AHK_IO = IO' FFI_AHK
+  Promise : Type -> Type
+  Promise = IO' FFI_AHK
 
   IO : Type -> Type
   IO a = IO' FFI_AHK a

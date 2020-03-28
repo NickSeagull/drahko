@@ -1,19 +1,19 @@
-module IdrisCG.AutoHotkey.Generate.Block where
+module Drahko.Generate.Block where
 
 import Data.Data
-import qualified IRTS.Lang as Idris
-import qualified Idris.Core.TT as Idris
-import IdrisCG.AutoHotkey.Generate.Common
-import qualified IdrisCG.AutoHotkey.Generate.Constant as Constant
-import qualified IdrisCG.AutoHotkey.Generate.Name as Name
-import IdrisCG.AutoHotkey.Generate.Orphans ()
-import qualified IdrisCG.AutoHotkey.Generate.PrimFunction as PrimFunction
-import IdrisCG.AutoHotkey.Syntax
+import Drahko.Generate.Common
+import qualified Drahko.Generate.Constant as Constant
+import qualified Drahko.Generate.Name as Name
+import Drahko.Generate.Orphans ()
+import qualified Drahko.Generate.PrimFunction as PrimFunction
+import Drahko.Syntax
   ( Block,
     Expression (..),
     Name (..),
     Statement (..),
   )
+import qualified IRTS.Lang as Idris
+import qualified Idris.Core.TT as Idris
 import Relude
 
 generate :: (Expression -> Statement) -> Idris.LExp -> Block

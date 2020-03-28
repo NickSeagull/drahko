@@ -1,9 +1,9 @@
-module IdrisCG.AutoHotkey.Generate.PrimFunction where
+module Drahko.Generate.PrimFunction where
 
+import Drahko.Generate.Common
+import qualified Drahko.Generate.Name as Name
+import Drahko.Syntax (Expression (..))
 import qualified IRTS.Lang as Idris (PrimFn (..))
-import IdrisCG.AutoHotkey.Generate.Common
-import qualified IdrisCG.AutoHotkey.Generate.Name as Name
-import IdrisCG.AutoHotkey.Syntax (Expression (..))
 import Relude
 
 generate :: Idris.PrimFn -> [Expression] -> Expression

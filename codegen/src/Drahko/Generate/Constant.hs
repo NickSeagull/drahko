@@ -1,7 +1,7 @@
-module IdrisCG.AutoHotkey.Generate.Constant where
+module Drahko.Generate.Constant where
 
+import Drahko.Syntax (Expression (..), Literal (..))
 import Idris.Core.TT as Idris (Const (..), isTypeConst)
-import IdrisCG.AutoHotkey.Syntax (Expression (..), Literal (..))
 import Relude
 
 generate :: Idris.Const -> Expression

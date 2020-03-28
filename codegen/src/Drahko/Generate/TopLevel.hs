@@ -1,11 +1,11 @@
-module IdrisCG.AutoHotkey.Generate.TopLevel where
+module Drahko.Generate.TopLevel where
 
+import qualified Drahko.Generate.Block as Block
+import Drahko.Generate.Common
+import qualified Drahko.Generate.Name as Name
+import Drahko.Syntax
 import qualified IRTS.Lang as Idris (LDecl (..))
 import qualified Idris.Core.TT as Idris (Name)
-import qualified IdrisCG.AutoHotkey.Generate.Block as Block
-import IdrisCG.AutoHotkey.Generate.Common
-import qualified IdrisCG.AutoHotkey.Generate.Name as Name
-import IdrisCG.AutoHotkey.Syntax
 import Relude
 
 generate :: MonadIO m => Name -> (Idris.Name, Idris.LDecl) -> m Statement

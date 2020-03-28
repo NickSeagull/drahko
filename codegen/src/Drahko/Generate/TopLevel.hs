@@ -12,12 +12,16 @@ generate :: MonadIO m => Name -> (Idris.Name, Idris.LDecl) -> m Statement
 generate programName (functionName, Idris.LFun _ _ args definition)
   | Idris.showCG functionName `elem` ignoredTopLevels = pure NoOp
   | otherwise = do
+    putStrLn (msg functionName)
     let funName = Name.generate functionName
     let funArgs = Name.generate <$> args
-    let funBody = Function (Name "run") funArgs (copyFunArgs funArgs <> Block.generate Return definition)
+    let funBlock = Block.generate Return definition
+    let funBody = Function (Name "run") funArgs (copyFunArgs funArgs <> funBlock)
     pure $ Class funName (Just programName) [funBody]
 generate _ (_, Idris.LConstructor {}) =
   pure NoOp
+
+msg name = "======== " <> Idris.showCG name <> " ========"
 
 ignoredTopLevels :: [String]
 ignoredTopLevels =

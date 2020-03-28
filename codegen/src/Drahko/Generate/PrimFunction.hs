@@ -13,6 +13,8 @@ generate (Idris.LExternal n) params =
   Apply (thisDot $ Variable $ Name.generate n) params
 generate Idris.LCrash args =
   Apply (primitiveFunction "crash") args
+generate Idris.LStrConcat [lhs, rhs] =
+  BinaryOperatorApply Concat lhs rhs
 generate x _ =
   error ("\nPrimitive function not implemented \n\n\t" <> show x <> "\n")
 

@@ -1,8 +1,8 @@
-name: idris-autohotkey
+name: drahko
 version: "0.0.1"
 maintainer: Nikita Tchayka <nick@booster.cloud>
 license: MIT
-github: NickSeagull/idris-autohotkey
+github: NickSeagull/drahko
 
 ghc-options:
   - -Wall
@@ -46,7 +46,7 @@ executables:
     source-dirs:
       - codegen/app
     dependencies:
-      - idris-autohotkey
+      - drahko
 
 tests:
   spec:
@@ -54,7 +54,7 @@ tests:
     source-dirs:
       - codegen/test
     dependencies:
-      - idris-autohotkey
+      - drahko
       - hspec
       - hspec-discover
       - hw-hspec-hedgehog

@@ -6,9 +6,9 @@ readme     = README.md
 license    = README.md
 author     = Nikita Tchayka
 maintainer = Nikita Tchayka
-homepage   = https://github.com/NickSeagull/idris-autohotkey
-sourceloc  = git:github.com:NickSeagull/idris-autohotkey.git
-bugtracker = https://github.com/NickSeagull/idris-autohotkey/issues
+homepage   = https://github.com/NickSeagull/drahko
+sourceloc  = git:github.com:NickSeagull/drahko.git
+bugtracker = https://github.com/NickSeagull/drahko/issues
 
 sourcedir = lib
 modules   = AutoHotkey.Builtins

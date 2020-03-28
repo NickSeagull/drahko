@@ -1,6 +1,6 @@
-# 🐉⌨ Idris AutoHotkey
+# Drahko
 
-[![Build status](https://ci.appveyor.com/api/projects/status/b5r11wcau0upomgv?svg=true)](https://ci.appveyor.com/project/NickSeagull/idris-autohotkey)
+[![Build status](https://ci.appveyor.com/api/projects/status/b5r11wcau0upomgv?svg=true)](https://ci.appveyor.com/project/NickSeagull/drahko)
 
 > ⚠ **DISCLAIMER:** This project is in it's very early days, and it doesn't support most of stuff from Idris or AutoHotkey. The only tested code is the one in [`examples/HelloWorld.idr`](examples/HelloWorld.idr), which is a Hello world app.
 
@@ -18,8 +18,8 @@ The Idris typechecker should remove the rest of runtime errors.
 1. Follow the steps on how to install Idris dependencies using Stack [on the official Idris wiki](https://github.com/idris-lang/Idris-dev/wiki/Idris-on-Windows#stack-haskell-platform-tool-installation).
 2. Clone the repo
    ```text
-   git clone git@github.com:NickSeagull/idris-autohotkey.git
-   cd idris-autohotkey
+   git clone git@github.com:NickSeagull/drahko.git
+   cd drahko
    ```
 3. Build the project
    ```text

@@ -10,5 +10,6 @@ generate = \case
   (Idris.Ch c) -> (Literal . String $ one c)
   (Idris.BI i) -> (Literal $ Integer i)
   (Idris.Str s) -> (Literal . String $ toText s)
+  Idris.TheWorld -> (Literal $ String "")
   x | isTypeConst x -> (Literal $ String "")
   x -> error ("\nConstant not implemented \n\n\t" <> show x <> "\n")

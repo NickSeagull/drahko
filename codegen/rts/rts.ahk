@@ -1,16 +1,17 @@
-#Warn
-
-idris_putStr(x)
+class __drahko
 {
-  MsgBox % x
-}
+  putStr(x)
+  {
+    MsgBox % x
+  }
 
-TheWorld()
-{
-  return ""
-}
+  TheWorld()
+  {
+    return ""
+  }
 
-idris_crash(msg)
-{
-  throw Exception(msg, -1)
+  crash(msg)
+  {
+    throw Exception(msg, -1)
+  }
 }

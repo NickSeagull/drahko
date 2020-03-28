@@ -1,10 +1,10 @@
-module IdrisCG.AutoHotkey.Generate.Program where
+module Drahko.Generate.Program where
 
+import qualified Drahko.Generate.Name as Name
+import qualified Drahko.Generate.TopLevel as TopLevel
+import Drahko.Syntax
 import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as IdrisCore
-import qualified IdrisCG.AutoHotkey.Generate.Name as Name
-import qualified IdrisCG.AutoHotkey.Generate.TopLevel as TopLevel
-import IdrisCG.AutoHotkey.Syntax
 import Relude
 
 generate :: MonadIO m => [(IdrisCore.Name, Idris.LDecl)] -> m Program

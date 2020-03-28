@@ -1,8 +1,8 @@
-module IdrisCG.AutoHotkey.Generate.Variable where
+module Drahko.Generate.Variable where
 
+import qualified Drahko.Generate.Name as Name
+import Drahko.Syntax (Expression (..))
 import qualified IRTS.Lang as Idris (LVar (..))
-import qualified IdrisCG.AutoHotkey.Generate.Name as Name
-import IdrisCG.AutoHotkey.Syntax (Expression (..))
 
 generate :: Idris.LVar -> Expression
 generate var =

@@ -1,10 +1,10 @@
-module IdrisCG.AutoHotkey.Generate.Name where
+module Drahko.Generate.Name where
 
 import qualified Data.Text as Text
 import qualified Data.UUID as UUID
 import qualified Data.UUID.V4 as UUID
+import Drahko.Syntax (Name (..))
 import qualified Idris.Core.TT as Idris (Name, showCG)
-import IdrisCG.AutoHotkey.Syntax (Name (..))
 import Relude
 
 notAllowedSymbols :: String

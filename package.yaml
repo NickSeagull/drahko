@@ -36,7 +36,7 @@ library:
   source-dirs:
     - codegen/src
   exposed-modules:
-    - IdrisCG.AutoHotkey
+    - Drahko
 
 executables:
   idris-codegen-autohotkey:

@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module IdrisCG.AutoHotkey.Generate.Orphans where
+module Drahko.Generate.Orphans where
 
 import Data.Data
 import qualified IRTS.Lang as Idris

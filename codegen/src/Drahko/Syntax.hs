@@ -1,4 +1,4 @@
-module IdrisCG.AutoHotkey.Syntax where
+module Drahko.Syntax where
 
 import Relude
 

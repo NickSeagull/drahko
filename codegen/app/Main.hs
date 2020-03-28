@@ -1,11 +1,11 @@
 module Main where
 
+import Drahko
 import IRTS.Compiler
 import Idris.AbsSyntax
 import Idris.ElabDecls
 import Idris.Main
 import Idris.Options
-import IdrisCG.AutoHotkey
 import Relude
 import System.Environment
 

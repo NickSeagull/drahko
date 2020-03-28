@@ -1,7 +1,7 @@
-module IdrisCG.AutoHotkey.Render where
+module Drahko.Render where
 
 import qualified Data.Text as Text
-import qualified IdrisCG.AutoHotkey.Syntax as Syntax
+import qualified Drahko.Syntax as Syntax
 import Relude hiding (empty)
 import Text.PrettyPrint.Mainland
 

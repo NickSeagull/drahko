@@ -1,6 +1,4 @@
-import AutoHotkey.Builtins
-import AutoHotkey.FFI
+import Drahko
 
-main : AHK_IO ()
-main =
-  msgBox "Hello AutoHotkey, from Idris!"
+main : Promise ()
+main = msgBox "Hello world!"

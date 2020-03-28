@@ -1,6 +1,6 @@
-package autohotkey
+package drahko
 
-brief      = "Generate AutoHotkey from Idris"
+brief      = "Windows automation based on AutoHotkey"
 version    = 0.0.1
 readme     = README.md
 license    = README.md
@@ -11,5 +11,6 @@ sourceloc  = git:github.com:NickSeagull/drahko.git
 bugtracker = https://github.com/NickSeagull/drahko/issues
 
 sourcedir = lib
-modules   = AutoHotkey.Builtins
-          , AutoHotkey.FFI
+modules   = Drahko
+          , Drahko.Builtins
+          , Drahko.FFI

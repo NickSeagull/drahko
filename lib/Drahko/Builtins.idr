@@ -11,5 +11,5 @@ call_command name =
   foreign FFI_AHK (AHK_Command name)
 
 %inline
-msgBox : String -> AHK_IO ()
-msgBox = call_command "MsgBox" (String -> AHK_IO ())
+msgBox : String -> Promise ()
+msgBox = call_command "MsgBox" (String -> Promise ())

@@ -15,7 +15,10 @@ fromVar :: Idris.LVar -> Name
 fromVar (Idris.Glob idrisName) =
   fromName idrisName
 fromVar (Idris.Loc idrisRegistry) =
-  new ("r" <> show idrisRegistry :: Text)
+  loc idrisRegistry
+
+loc :: Int -> Name
+loc i = new ("r" <> show i :: Text)
 
 fromName :: Idris.Name -> Name
 fromName idrisName =
@@ -40,6 +43,3 @@ random :: MonadIO m => m Name
 random = do
   uuid <- liftIO UUID.nextRandom
   pure (new $ "f" <> UUID.toText uuid)
-
-loc :: Int -> Name
-loc i = Name ("loc" <> show i)

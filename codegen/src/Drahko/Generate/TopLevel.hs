@@ -7,12 +7,12 @@ import qualified IRTS.Simplified as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadIO m => Name -> (Idris.Name, Idris.SDecl) -> m Statement
-generate programName (functionName, Idris.SFun _ args _ definition)
+generate :: MonadIO m => (Idris.Name, Idris.SDecl) -> m Statement
+generate (functionName, Idris.SFun _ args _ definition)
   | Idris.showCG functionName `elem` ignoredTopLevels = pure NoOp
   | otherwise = do
     let funName = Name.fromName functionName
-    let funArgs = Name.fromName <$> args
+    let funArgs = Name.loc <$> [0 .. (length args - 1)]
     funBlock <- Block.generate Return definition
     pure $ Function funName funArgs funBlock
 

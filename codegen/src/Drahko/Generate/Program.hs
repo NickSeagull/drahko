@@ -9,8 +9,7 @@ import Relude
 
 generate :: MonadIO m => [(IdrisCore.Name, Idris.SDecl)] -> m Program
 generate definitions = do
-  programName <- Name.random
-  functions <- traverse (TopLevel.generate programName) definitions
+  functions <- traverse TopLevel.generate definitions
   let mainName = Name.fromName (IdrisCore.sMN 0 "runMain")
   let start = Call (Variable mainName) []
   let statements = functions <> [start]

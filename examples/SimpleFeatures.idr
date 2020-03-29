@@ -2,12 +2,13 @@ import Drahko
 
 foo : Promise String
 foo = do
+  let dot = "."
   let x = \y => do
     msgBox "appending"
-    pure (y ++ ".")
+    pure (y ++ dot)
   a <- x "Hello"
   b <- x "World"
-  pure (a ++ b)
+  pure (a ++ "  ayy lmao  " ++ b)
 
 main : Promise ()
 main = do

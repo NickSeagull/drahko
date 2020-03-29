@@ -68,11 +68,13 @@ genCases returning caseExpr alternatives = do
               show t,
               show expr
             ]
-      Idris.SConCase _ t _ _ expr -> do
-        let test = BinaryOperatorApply Equal (Projection caseExpr (Literal $ Integer 0)) (Literal $ Integer $ fromIntegral t)
-        -- TODO: Add lets block
+      Idris.SConCase lv t _ args expr -> do
+        let test = BinaryOperatorApply Equal (Projection caseExpr (Literal $ Integer 1)) (Literal $ Integer $ fromIntegral t)
+        let letPairs = zip [2 .. length args + 1] [lv ..]
+        let letProject (i, v) = Assignment (Variable $ Name.loc v) (Projection caseExpr (Literal $ Integer $ fromIntegral i))
+        let lets = map letProject letPairs
         block <- generate returning expr
-        pure (cases <> [ConditionalCase test block], defaultCase)
+        pure (cases <> [ConditionalCase test (lets <> block)], defaultCase)
       Idris.SDefaultCase expr -> do
         block <- generate returning expr
         pure (cases, defaultCase <> block)

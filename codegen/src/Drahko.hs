@@ -8,6 +8,6 @@ import Relude
 
 codegenAHK :: Idris.CodeGenerator
 codegenAHK Idris.CodegenInfo {..} = do
-  program <- Program.generate liftDecls
+  program <- Program.generate simpleDecls
   let renderedProgram = Render.renderToText $ Render.renderProgram program
   writeFile outputFile (RTS.contents <> renderedProgram)

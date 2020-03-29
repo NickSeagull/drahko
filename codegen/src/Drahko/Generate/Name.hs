@@ -4,14 +4,21 @@ import qualified Data.Text as Text
 import qualified Data.UUID as UUID
 import qualified Data.UUID.V4 as UUID
 import Drahko.Syntax (Name (..))
-import qualified Idris.Core.TT as Idris (Name, showCG)
+import qualified IRTS.Lang as Idris
+import qualified Idris.Core.TT as Idris
 import Relude
 
 notAllowedSymbols :: String
 notAllowedSymbols = "{}[]()"
 
-generate :: Idris.Name -> Name
-generate idrisName =
+fromVar :: Idris.LVar -> Name
+fromVar (Idris.Glob idrisName) =
+  fromName idrisName
+fromVar (Idris.Loc idrisRegistry) =
+  new ("r" <> show idrisRegistry :: Text)
+
+fromName :: Idris.Name -> Name
+fromName idrisName =
   new (Idris.showCG idrisName)
 
 new :: ToText a => a -> Name

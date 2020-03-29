@@ -10,7 +10,7 @@ generate :: Idris.PrimFn -> [Expression] -> Expression
 generate Idris.LWriteStr [_, str] =
   Apply (primitiveFunction "putStr") [str]
 generate (Idris.LExternal n) params =
-  Apply (thisDot $ Variable $ Name.generate n) params
+  Apply (thisDot $ Variable $ Name.fromName n) params
 generate Idris.LCrash args =
   Apply (primitiveFunction "crash") args
 generate Idris.LStrConcat [lhs, rhs] =

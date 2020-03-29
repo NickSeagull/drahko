@@ -1,60 +1,88 @@
-module Drahko.Generate.Block where
+module Drahko.Generate.Block (generate) where
 
-import Data.Data
 import Drahko.Generate.Common
 import qualified Drahko.Generate.Constant as Constant
 import qualified Drahko.Generate.Name as Name
 import Drahko.Generate.Orphans ()
 import qualified Drahko.Generate.PrimFunction as PrimFunction
+import qualified Drahko.Generate.Variable as Variable
 import Drahko.Syntax
-  ( Block,
-    Expression (..),
-    Name (..),
-    Statement (..),
-  )
 import qualified IRTS.Lang as Idris
+import qualified IRTS.Simplified as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadIO m => (Expression -> Statement) -> Idris.LExp -> m Block
+generate :: MonadIO m => (Expression -> Statement) -> Idris.SExp -> m Block
 generate returning expression = case expression of
-  Idris.LForce expr ->
-    generate returning expr
-  Idris.LApp _ (Idris.LV name) args -> do
-    let ahkClassName = Variable (Name.generate name)
+  Idris.SApp _ name args -> do
+    let ahkClassName = Variable (Name.fromName name)
     let runName = Variable (Name "run")
-    let ahkArgs = map genExpr args
+    let ahkArgs = map Variable.generate args
     pure [returning $ Apply (thisDot (DotAccess ahkClassName runName)) ahkArgs]
-  Idris.LNothing ->
+  Idris.SNothing ->
     pure [returning nullExpr]
-  Idris.LOp primFn args -> do
-    let ahkArgs = map genExpr args
+  Idris.SOp primFn args -> do
+    let ahkArgs = map Variable.generate args
     let func = PrimFunction.generate primFn ahkArgs
     pure [returning func]
-  Idris.LForeign _ foreignName params -> do
-    let ahkArgs = map (genExpr . snd) params
+  Idris.SForeign _ foreignName params -> do
+    let ahkArgs = map (Variable.generate . snd) params
     pure $ genForeign returning foreignName ahkArgs
-  Idris.LLet name expr restExpressions -> do
-    print expression
-    let ahkName = Variable (Name.generate name)
+  Idris.SLet name expr restExpressions -> do
+    let ahkName = Variable.generate name
     ahkBind <- generate (Assignment (thisDot ahkName)) expr
     ahkRest <- generate returning restExpressions
     pure $ ahkBind <> ahkRest
-  Idris.LConst constExpr ->
+  Idris.SConst constExpr ->
     pure [returning $ Constant.generate constExpr]
-  Idris.LV name -> do
-    let ahkName = Name.generate name
-    pure [returning $ thisDot (Variable ahkName)]
-  Idris.LCase caseType expr alts ->
-    error $
-      unlines
-        [ "-------- LCase ----------",
-          show caseType,
-          show expr,
-          show alts
-        ]
+  Idris.SV name -> do
+    let ahkName = Variable.generate name
+    pure [returning $ thisDot ahkName]
+  Idris.SCon _ t _ args -> do
+    let constr = Literal (Integer $ fromIntegral t)
+    let ahkArgs = map Variable.generate args
+    pure [returning $ Literal $ List (constr : ahkArgs)]
+  Idris.SCase _ expr alts ->
+    genCases returning (Variable.generate expr) alts
+  Idris.SChkCase expr alts ->
+    genCases returning (Variable.generate expr) alts
   otherExpression ->
-    error ("\nExpression not implemented \n\n\t" <> show (toConstr otherExpression) <> "\n")
+    error ("\nExpression not implemented \n\n\t" <> show otherExpression <> "\n")
+
+genCases :: Monad m => (Expression -> Statement) -> Expression -> [Idris.SAlt] -> m Block
+genCases returning caseExpr alternatives = do
+  let ahkCases = foldl' generateBranches ([], []) alternatives
+  case ahkCases of
+    ([], block) ->
+      pure block
+    (ifCase : elseIfCases, defaultBlock) -> do
+      let elseBlock = if null defaultBlock then Nothing else Just defaultBlock
+      pure [Condition (ConditionalStatement ifCase elseIfCases elseBlock)]
+  where
+    generateBranches :: (a, b) -> Idris.SAlt -> (a, b)
+    generateBranches (cases, defaultCase) sAlt = case sAlt of
+      Idris.SConstCase t expr ->
+        error $
+          unlines
+            [ "SConstCase ",
+              show t,
+              show expr
+            ]
+      Idris.SConCase lv t _ args expr ->
+        error $
+          unlines
+            [ "SConCase ",
+              show lv,
+              show t,
+              show args,
+              show expr
+            ]
+      Idris.SDefaultCase expr ->
+        error $
+          unlines
+            [ "SDefault ",
+              show expr
+            ]
 
 genForeign :: (Expression -> Statement) -> Idris.FDesc -> [Expression] -> Block
 genForeign _ (Idris.FApp fName fArg) params =
@@ -72,20 +100,3 @@ genForeign _ (Idris.FApp fName fArg) params =
           ]
 genForeign _ other _ =
   error $ unlines ["out of the case", show other]
-
-genExpr :: Idris.LExp -> Expression
-genExpr (Idris.LV name) = do
-  let ahkName = Name.generate name
-  thisDot (Variable ahkName)
-genExpr (Idris.LApp _ (Idris.LV name) args) = do
-  let ahkName = Name.generate name
-  let ahkArgs = map genExpr args
-  Apply (thisDot $ Variable ahkName) ahkArgs
-genExpr (Idris.LCon _ _ name args) = do
-  let ahkName = Name.generate name
-  let ahkArgs = map genExpr args
-  Apply (thisDot $ Variable ahkName) ahkArgs
-genExpr (Idris.LConst c) =
-  Constant.generate c
-genExpr other =
-  error ("\ngenExpr: " <> show (toConstr other))

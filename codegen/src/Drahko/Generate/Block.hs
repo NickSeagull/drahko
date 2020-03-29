@@ -1,5 +1,6 @@
 module Drahko.Generate.Block (generate) where
 
+import Control.Monad (foldM)
 import Drahko.Generate.Common
 import qualified Drahko.Generate.Constant as Constant
 import qualified Drahko.Generate.Name as Name
@@ -49,9 +50,9 @@ generate returning expression = case expression of
   otherExpression ->
     error ("\nExpression not implemented \n\n\t" <> show otherExpression <> "\n")
 
-genCases :: Monad m => (Expression -> Statement) -> Expression -> [Idris.SAlt] -> m Block
+genCases :: MonadIO m => (Expression -> Statement) -> Expression -> [Idris.SAlt] -> m Block
 genCases returning caseExpr alternatives = do
-  let ahkCases = foldl' generateBranches ([], []) alternatives
+  ahkCases <- foldM generateBranches ([], []) alternatives
   case ahkCases of
     ([], block) ->
       pure block
@@ -59,7 +60,7 @@ genCases returning caseExpr alternatives = do
       let elseBlock = if null defaultBlock then Nothing else Just defaultBlock
       pure [Condition (ConditionalStatement ifCase elseIfCases elseBlock)]
   where
-    generateBranches :: (a, b) -> Idris.SAlt -> (a, b)
+    generateBranches :: MonadIO m => ([ConditionalCase], Block) -> Idris.SAlt -> m ([ConditionalCase], Block)
     generateBranches (cases, defaultCase) sAlt = case sAlt of
       Idris.SConstCase t expr ->
         error $
@@ -68,21 +69,14 @@ genCases returning caseExpr alternatives = do
               show t,
               show expr
             ]
-      Idris.SConCase lv t _ args expr ->
-        error $
-          unlines
-            [ "SConCase ",
-              show lv,
-              show t,
-              show args,
-              show expr
-            ]
-      Idris.SDefaultCase expr ->
-        error $
-          unlines
-            [ "SDefault ",
-              show expr
-            ]
+      Idris.SConCase _ t _ _ expr -> do
+        let test = BinaryOperatorApply Equal (Projection caseExpr (Literal $ Integer 0)) (Literal $ Integer $ fromIntegral t)
+        -- TODO: Add lets block
+        block <- generate returning expr
+        pure (cases <> [ConditionalCase test block], defaultCase)
+      Idris.SDefaultCase expr -> do
+        block <- generate returning expr
+        pure (cases, defaultCase <> block)
 
 genForeign :: (Expression -> Statement) -> Idris.FDesc -> [Expression] -> Block
 genForeign _ (Idris.FApp fName fArg) params =

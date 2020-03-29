@@ -16,7 +16,7 @@ import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: (Expression -> Statement) -> Idris.LExp -> Block
+generate :: MonadIO m => (Expression -> Statement) -> Idris.LExp -> m Block
 generate returning expression = case expression of
   Idris.LForce expr ->
     generate returning expr
@@ -24,25 +24,27 @@ generate returning expression = case expression of
     let ahkClassName = Variable (Name.generate name)
     let runName = Variable (Name "run")
     let ahkArgs = map genExpr args
-    [Call (thisDot (DotAccess ahkClassName runName)) ahkArgs]
+    pure [returning $ Apply (thisDot (DotAccess ahkClassName runName)) ahkArgs]
   Idris.LNothing ->
-    [returning nullExpr]
+    pure [returning nullExpr]
   Idris.LOp primFn args -> do
     let ahkArgs = map genExpr args
     let func = PrimFunction.generate primFn ahkArgs
-    [returning func]
+    pure [returning func]
   Idris.LForeign _ foreignName params -> do
     let ahkArgs = map (genExpr . snd) params
-    genForeign returning foreignName ahkArgs
+    pure $ genForeign returning foreignName ahkArgs
   Idris.LLet name expr restExpressions -> do
+    print expression
     let ahkName = Variable (Name.generate name)
-    let ahkBind = generate (Assignment (thisDot ahkName)) expr
-    ahkBind <> generate returning restExpressions
+    ahkBind <- generate (Assignment (thisDot ahkName)) expr
+    ahkRest <- generate returning restExpressions
+    pure $ ahkBind <> ahkRest
   Idris.LConst constExpr ->
-    [returning $ Constant.generate constExpr]
+    pure [returning $ Constant.generate constExpr]
   Idris.LV name -> do
     let ahkName = Name.generate name
-    [returning $ thisDot (Variable ahkName)]
+    pure [returning $ thisDot (Variable ahkName)]
   Idris.LCase caseType expr alts ->
     error $
       unlines

@@ -12,7 +12,6 @@ generate definitions = do
   programName <- Name.random
   functions <- traverse (TopLevel.generate programName) definitions
   let mainName = Name.fromName (IdrisCore.sMN 0 "runMain")
-  let start = Call (DotAccess (Variable programName) (DotAccess (Variable mainName) (Variable $ Name "run"))) []
-  let mainClass = Class programName Nothing functions
-  let statements = [mainClass, start]
+  let start = Call (Variable mainName) []
+  let statements = functions <> [start]
   pure $ Program statements

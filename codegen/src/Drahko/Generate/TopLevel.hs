@@ -1,7 +1,6 @@
 module Drahko.Generate.TopLevel where
 
 import qualified Drahko.Generate.Block as Block
-import Drahko.Generate.Common
 import qualified Drahko.Generate.Name as Name
 import Drahko.Syntax
 import qualified IRTS.Simplified as Idris
@@ -15,9 +14,7 @@ generate programName (functionName, Idris.SFun _ args _ definition)
     let funName = Name.fromName functionName
     let funArgs = Name.fromName <$> args
     funBlock <- Block.generate Return definition
-    let funBody = Function (Name "run") funArgs (copyFunArgs funArgs <> funBlock)
-    let result = Class funName (Just programName) [funBody]
-    pure result
+    pure $ Function funName funArgs funBlock
 
 ignoredTopLevels :: [String]
 ignoredTopLevels =

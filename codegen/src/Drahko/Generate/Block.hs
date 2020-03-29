@@ -16,10 +16,9 @@ import Relude
 generate :: MonadIO m => (Expression -> Statement) -> Idris.SExp -> m Block
 generate returning expression = case expression of
   Idris.SApp _ name args -> do
-    let ahkClassName = Variable (Name.fromName name)
-    let runName = Variable (Name "run")
+    let ahkName = Variable (Name.fromName name)
     let ahkArgs = map Variable.generate args
-    pure [returning $ Apply (thisDot (DotAccess ahkClassName runName)) ahkArgs]
+    pure [returning $ Apply ahkName ahkArgs]
   Idris.SNothing ->
     pure [returning nullExpr]
   Idris.SOp primFn args -> do
@@ -31,14 +30,14 @@ generate returning expression = case expression of
     pure $ genForeign returning foreignName ahkArgs
   Idris.SLet name expr restExpressions -> do
     let ahkName = Variable.generate name
-    ahkBind <- generate (Assignment (thisDot ahkName)) expr
+    ahkBind <- generate (Assignment ahkName) expr
     ahkRest <- generate returning restExpressions
     pure $ ahkBind <> ahkRest
   Idris.SConst constExpr ->
     pure [returning $ Constant.generate constExpr]
   Idris.SV name -> do
     let ahkName = Variable.generate name
-    pure [returning $ thisDot ahkName]
+    pure [returning ahkName]
   Idris.SCon _ t _ args -> do
     let constr = Literal (Integer $ fromIntegral t)
     let ahkArgs = map Variable.generate args

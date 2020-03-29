@@ -29,7 +29,7 @@ renderLiteral = \case
       & strictText
   Syntax.List expressions -> do
     let renderedExpressions = fmap renderExpression expressions
-    parenList renderedExpressions
+    bracketList renderedExpressions
 
 renderExpression :: Syntax.Expression -> Doc
 renderExpression = \case
@@ -58,7 +58,7 @@ renderConditionalCase caseWord (Syntax.ConditionalCase expr block) =
   stack
     [ caseWord <> parens (renderExpression expr),
       lbrace,
-      renderBlock block,
+      indent 4 $ renderBlock block,
       rbrace
     ]
 
@@ -92,7 +92,7 @@ renderStatement = \case
     stack
       [ renderName name <> parenList (fmap renderName args),
         lbrace,
-        indent 4 "global",
+        -- indent 4 "global",
         indent 4 $ renderBlock block,
         rbrace
       ]

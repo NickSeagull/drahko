@@ -1,13 +1,17 @@
-import AutoHotkey.Builtins
-import AutoHotkey.FFI
+import Drahko
 
-foo : String
-foo =
-  let x = \y => y ++ "from Idris!"
-  in x "Hello AutoHotkey, "
+foo : Promise String
+foo = do
+  let dot = "."
+  let x = \y => do
+    msgBox "appending"
+    pure (y ++ dot)
+  a <- x "Hello"
+  b <- x "World"
+  pure (a ++ "  ayy lmao  " ++ b)
 
-main : AHK_IO ()
+main : Promise ()
 main = do
-  x <- pure "lol"
+  x <- foo
   msgBox x
   msgBox x

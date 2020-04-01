@@ -1,6 +1,6 @@
-module AutoHotkey.Builtins
+module Drahko.Builtins
 
-import AutoHotkey.FFI
+import Drahko.FFI
 
 %access public export
 
@@ -13,3 +13,9 @@ call_command name =
 %inline
 msgBox : String -> Promise ()
 msgBox = call_command "MsgBox" (String -> Promise ())
+
+%inline
+hotkey : String -> () -> Promise ()
+hotkey hotkeyString action =
+  call_command "Hotkey" (String -> Raw (String -> ()) -> Promise ())
+    hotkeyString (MkAutoHotkeyFn $ \x => action)

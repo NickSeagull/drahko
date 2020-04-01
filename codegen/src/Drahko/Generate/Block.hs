@@ -27,7 +27,7 @@ generate returning expression = case expression of
     pure [returning func]
   Idris.SForeign _ foreignName params -> do
     let ahkArgs = map (Variable.generate . snd) params
-    pure $ genForeign returning foreignName ahkArgs
+    genForeign returning foreignName ahkArgs
   Idris.SLet name expr restExpressions -> do
     let ahkName = Variable.generate name
     ahkBind <- generate (Assignment ahkName) expr
@@ -79,11 +79,12 @@ genCases returning caseExpr alternatives = do
         block <- generate returning expr
         pure (cases, defaultCase <> block)
 
-genForeign :: (Expression -> Statement) -> Idris.FDesc -> [Expression] -> Block
+genForeign :: MonadIO m => (Expression -> Statement) -> Idris.FDesc -> [Expression] -> m Block
 genForeign _ (Idris.FApp fName fArg) params =
   case (Idris.showCG fName, fArg, params) of
-    ("AHK_Command", [Idris.FStr commandName], p) ->
-      [Command (Name $ toText commandName) p]
+    ("AHK_Command", [Idris.FStr commandName], p) -> do
+      putTextLn ("ARGS: " <> show params)
+      pure [Command (Name $ toText commandName) p]
     other ->
       error $
         unlines

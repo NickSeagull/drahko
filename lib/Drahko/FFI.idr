@@ -1,4 +1,4 @@
-module AutoHotkey.FFI
+module Drahko.FFI
 
 %default total
 

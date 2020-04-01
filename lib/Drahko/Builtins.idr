@@ -10,9 +10,10 @@ import Drahko.FFI
 msgBox : String -> Promise ()
 msgBox = call_command "MsgBox" (String -> Promise ())
 
-hotkey : String -> (() -> Promise ()) -> Promise ()
+%inline
+hotkey : String -> Promise () -> Promise ()
 hotkey hotkeyString action =
   call_function
           "Hotkey"
           (String -> (() -> Promise ()) -> Promise ())
-          hotkeyString action
+          hotkeyString (\_ => action)

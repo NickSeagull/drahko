@@ -8,8 +8,8 @@ foo x = unsafePerformIO $ do
 
 main : Promise ()
 main = do
-  hotkey "#z" $ \_ =>
+  hotkey "#z" $ do
     msgBox "Pressed Win+Z"
 
-  hotkey "#t" $ \_ =>
+  hotkey "#t" $ do
     msgBox "Pressed Win+T"

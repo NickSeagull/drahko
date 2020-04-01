@@ -42,16 +42,19 @@ mutual
 mutual
   -- Translates an AHK-conventions function to an Idris-conventions
   -- one by inserting an additional dummy 'world' argument.
+  %inline
   fromAHKFn : AHK_FnTypes a -> a -> a
   fromAHKFn (AHK_Fn s t)     f = \x => fromAHKFn t (f (toAHK s x))
   fromAHKFn (AHK_FnIO s t)   f = \x => pure (fromAHK t (believe_me (f (toAHK s x))))
   fromAHKFn (AHK_FnBase s t) f = \x => fromAHK t (f (toAHK s x))
 
+  %inline
   toAHKFn : AHK_FnTypes a -> a -> a
   toAHKFn (AHK_Fn s t)     f = \x => toAHKFn t (f (fromAHK s x))
   toAHKFn (AHK_FnIO s t)   f = \x => believe_me (toAHK t (unsafePerformIO (f (fromAHK s x))))
   toAHKFn (AHK_FnBase s t) f = \x => toAHK t (f (fromAHK s x))
 
+  %inline
   fromAHK : AHK_Types a -> a -> a
   fromAHK AHK_Str        s = s
   fromAHK AHK_Int        i = i
@@ -64,6 +67,7 @@ mutual
   -- fromAHK (AHK_Pair s t) p = (fromAHK s (fst p), fromAHK t (snd p))
   -- fromAHK (AHK_List s)   l = map (fromAHK s) l
 
+  %inline
   toAHK : AHK_Types a -> a -> a
   toAHK AHK_Str        s = s
   toAHK AHK_Int        i = i

@@ -113,6 +113,8 @@ renderStatement = \case
         indent 4 $ renderBlock block,
         rbrace
       ]
+  Syntax.RawExpression expr ->
+    renderExpression expr
   Syntax.NoOp ->
     ""
 

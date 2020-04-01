@@ -3,16 +3,17 @@ module Drahko.Generate.TopLevel where
 import qualified Drahko.Generate.Block as Block
 import qualified Drahko.Generate.Name as Name
 import Drahko.Syntax
-import qualified IRTS.Simplified as Idris
+import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadIO m => (Idris.Name, Idris.SDecl) -> m Statement
-generate (functionName, Idris.SFun _ args _ definition)
+generate :: MonadIO m => (Idris.Name, Idris.LDecl) -> m Statement
+generate (_, Idris.LConstructor {}) = pure NoOp
+generate (functionName, Idris.LFun _ _ args definition)
   | Idris.showCG functionName `elem` ignoredTopLevels = pure NoOp
   | otherwise = do
     let funName = Name.fromName functionName
-    let funArgs = Name.loc <$> [0 .. (length args - 1)]
+    let funArgs = Name.fromName <$> args
     funBlock <- Block.generate Return definition
     pure $ Function funName funArgs funBlock
 

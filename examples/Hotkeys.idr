@@ -8,10 +8,8 @@ foo x = unsafePerformIO $ do
 
 main : Promise ()
 main = do
-  foreign FFI_AHK
-    (AHK_Command "Hotkey")
-    (String -> AutoHotkeyFn (() -> ()) -> Promise ())
-    "#z"
-    (MkAutoHotkeyFn foo)
+  hotkey "#z" $ \_ =>
+    msgBox "Pressed Win+Z"
 
-  pure ()
+  hotkey "#t" $ \_ =>
+    msgBox "Pressed Win+T"

@@ -53,6 +53,7 @@ data Statement
   | Condition ConditionalStatement
   | Assignment Expression Expression
   | NoOp
+  | RawExpression Expression
   | Command Name [Expression]
   | Class Name (Maybe Name) [Statement]
   deriving (Eq, Show)

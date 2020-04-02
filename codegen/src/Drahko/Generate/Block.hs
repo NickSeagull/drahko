@@ -139,7 +139,9 @@ genForeign returning (Idris.FApp fName fArg) params = do
       putTextLn ("ARGS: " <> show params)
       pure [Command (Name $ toText commandName) p]
     ("AHK_Function", [Idris.FStr functionName], p) -> do
-      let funName = Variable.generate functionName
+      -- we don't escape the name to let the user specify whatever
+      -- function they want to call, including methods
+      let funName = Variable (Name $ toText functionName)
       pure [returning $ Apply funName p]
     other ->
       error $

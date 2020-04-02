@@ -4,11 +4,10 @@ import Control.Monad (foldM)
 import Data.Data (toConstr)
 import Drahko.Generate.Common
 import qualified Drahko.Generate.Constant as Constant
-import qualified Drahko.Generate.Name as Name
 import qualified Drahko.Generate.Orphans ()
 import Drahko.Generate.Orphans ()
 import qualified Drahko.Generate.PrimFunction as PrimFunction
--- import qualified Drahko.Generate.Variable as Variable
+import qualified Drahko.Generate.Variable as Variable
 import Drahko.Syntax
 import qualified IRTS.Lang as Idris
 -- import qualified IRTS.Simplified as Idris
@@ -32,14 +31,14 @@ generate returning expression = case expression of
     ahkArgs <- traverse (genExpr . snd) params
     genForeign returning foreignName ahkArgs
   Idris.LLet name expr restExpressions -> do
-    let ahkName = Variable (Name.fromName name)
+    let ahkName = Variable.generate name
     ahkBind <- generate (Assignment ahkName) expr
     ahkRest <- generate returning restExpressions
     pure $ ahkBind <> ahkRest
   Idris.LConst constExpr ->
     pure [returning $ Constant.generate constExpr]
   Idris.LV name -> do
-    let ahkName = Variable (Name.fromName name)
+    let ahkName = Variable.generate name
     pure [returning ahkName]
   Idris.LCase _ expr alts -> do
     ahkExpr <- genExpr expr
@@ -48,14 +47,8 @@ generate returning expression = case expression of
     generate returning (Idris.LApp False (Idris.LV name) args)
   Idris.LForce e ->
     generate returning e
-  Idris.LCon mName number name args -> do
-    putTextLn "Generating LCon"
-    putTextLn ("mName: " <> show mName)
-    putTextLn ("number: " <> show number)
-    putTextLn ("name: " <> show name)
-    putTextLn ("args: " <> show args)
-    putTextLn "============"
-    let ahkName = Variable (Name.fromName name)
+  Idris.LCon _ _ name args -> do
+    let ahkName = Variable.generate name
     ahkArgs <- traverse genExpr args
     pure [returning $ Apply ahkName ahkArgs]
   otherExpression ->
@@ -74,15 +67,21 @@ generate returning expression = case expression of
 
 genExpr :: Monad m => Idris.LExp -> m Expression
 genExpr (Idris.LV name) =
-  pure $ Variable (Name.fromName name)
-genExpr (Idris.LApp _ expr args) = do
-  ahkExpr <- genExpr expr
-  ahkArgs <- traverse genExpr args
-  pure (Apply ahkExpr ahkArgs)
-genExpr (Idris.LCon _ _ name args) = do
-  let ahkName = Variable (Name.fromName name)
-  ahkArgs <- traverse genExpr args
-  pure (Apply ahkName ahkArgs)
+  pure $ Variable.generate name
+genExpr (Idris.LApp _ expr args) =
+  if null args
+    then genExpr expr
+    else do
+      ahkExpr <- genExpr expr
+      ahkArgs <- traverse genExpr args
+      pure (Apply ahkExpr ahkArgs)
+genExpr (Idris.LCon _ _ name args) =
+  if Idris.showCG name == "TheWorld"
+    then pure (Literal $ String "")
+    else do
+      let ahkName = Variable.generate name
+      ahkArgs <- traverse genExpr args
+      pure (Apply ahkName ahkArgs)
 genExpr (Idris.LConst const') =
   pure (Constant.generate const')
 genExpr Idris.LNothing =
@@ -121,9 +120,9 @@ genCases returning caseExpr alternatives = do
               show expr
             ]
       Idris.LConCase lv t args expr -> do
-        let test = BinaryOperatorApply Equal (Projection caseExpr (Literal $ Integer 1)) (Variable $ Name.fromName t)
+        let test = BinaryOperatorApply Equal (Projection caseExpr (Literal $ Integer 1)) (Variable.generate t)
         let letPairs = zip [2 .. length args + 1] [lv ..]
-        let letProject (i, v) = Assignment (Variable $ Name.loc v) (Projection caseExpr (Literal $ Integer $ fromIntegral i))
+        let letProject (i, v) = Assignment (Variable.generate v) (Projection caseExpr (Literal $ Integer $ fromIntegral i))
         let lets = map letProject letPairs
         block <- generate returning expr
         pure (cases <> [ConditionalCase test (lets <> block)], defaultCase)
@@ -140,7 +139,7 @@ genForeign returning (Idris.FApp fName fArg) params = do
       putTextLn ("ARGS: " <> show params)
       pure [Command (Name $ toText commandName) p]
     ("AHK_Function", [Idris.FStr functionName], p) -> do
-      let funName = Variable $ Name $ toText functionName
+      let funName = Variable.generate functionName
       pure [returning $ Apply funName p]
     other ->
       error $

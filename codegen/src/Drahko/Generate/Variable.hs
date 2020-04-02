@@ -1,9 +1,8 @@
 module Drahko.Generate.Variable where
 
-import qualified Drahko.Generate.Name as Name
+import Drahko.Generate.Name
 import Drahko.Syntax (Expression (..))
-import qualified IRTS.Lang as Idris (LVar (..))
+import Relude
 
-generate :: Idris.LVar -> Expression
-generate var =
-  Variable (Name.fromVar var)
+generate :: ToName a => a -> Expression
+generate = Variable . toName

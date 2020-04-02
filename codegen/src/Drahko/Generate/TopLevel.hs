@@ -1,7 +1,7 @@
 module Drahko.Generate.TopLevel where
 
 import qualified Drahko.Generate.Block as Block
-import qualified Drahko.Generate.Name as Name
+import Drahko.Generate.Name
 import Drahko.Syntax
 import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
@@ -12,8 +12,8 @@ generate (_, Idris.LConstructor {}) = pure NoOp
 generate (functionName, Idris.LFun _ _ args definition)
   | Idris.showCG functionName `elem` ignoredTopLevels = pure NoOp
   | otherwise = do
-    let funName = Name.fromName functionName
-    let funArgs = Name.fromName <$> args
+    let funName = toName functionName
+    let funArgs = toName <$> args
     funBlock <- Block.generate Return definition
     pure $ Function funName funArgs funBlock
 

@@ -3,7 +3,7 @@ module Drahko.Syntax where
 import Relude
 
 newtype Name = Name {unName :: Text}
-  deriving (Eq, Show, IsString, Generic, Ord)
+  deriving (Eq, Show, IsString, Generic, Ord, Hashable)
 
 data BinaryOperator
   = Add

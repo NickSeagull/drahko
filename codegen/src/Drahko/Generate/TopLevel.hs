@@ -1,63 +1,17 @@
 module Drahko.Generate.TopLevel where
 
 import qualified Drahko.Generate.Block as Block
+import Drahko.Generate.Common
 import Drahko.Generate.Name
 import Drahko.Syntax
 import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadIO m => (Idris.Name, Idris.LDecl) -> m Statement
+generate :: MonadState UnusedNames m => MonadIO m => (Idris.Name, Idris.LDecl) -> m Statement
 generate (_, Idris.LConstructor {}) = pure NoOp
-generate (functionName, Idris.LFun _ _ args definition)
-  | Idris.showCG functionName `elem` ignoredTopLevels = pure NoOp
-  | otherwise = do
-    let funName = toName functionName
-    let funArgs = toName <$> args
-    funBlock <- Block.generate Return definition
-    pure $ Function funName funArgs funBlock
-
-ignoredTopLevels :: [String]
-ignoredTopLevels =
-  primitiveFunctions
-    <> [ "unsafePerformPrimIO",
-         "run__IO",
-         "call__IO",
-         "mkForeignPrim",
-         "idris_crash",
-         "assert_unreachable"
-       ]
-  where
-    primitiveFunctions =
-      map
-        ("prim__" <>)
-        [ "writeFile",
-          "vm",
-          "stdout",
-          "stdin",
-          "stderr",
-          "sizeofPtr",
-          "registerPtr",
-          "readFile",
-          "readChars",
-          "ptrOffset",
-          "pokeSingle",
-          "pokePtr",
-          "pokeDouble",
-          "poke8",
-          "poke64",
-          "poke32",
-          "poke16",
-          "peekSingle",
-          "peekPtr",
-          "peekDouble",
-          "peek8",
-          "peek64",
-          "peek32",
-          "peek16",
-          "null",
-          "managedNull",
-          "eqPtr",
-          "eqManagedPtr",
-          "asPtr"
-        ]
+generate (functionName, Idris.LFun _ _ args definition) = do
+  let funName = toName functionName
+  let funArgs = toName <$> args
+  funBlock <- Block.generate Return definition
+  pure $ Function funName funArgs funBlock

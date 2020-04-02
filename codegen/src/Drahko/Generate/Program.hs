@@ -1,5 +1,6 @@
 module Drahko.Generate.Program where
 
+import Drahko.Generate.Common
 import qualified Drahko.Generate.TopLevel as TopLevel
 import qualified Drahko.Generate.Variable as Variable
 import Drahko.Syntax
@@ -9,8 +10,14 @@ import Relude
 
 generate :: MonadIO m => [(IdrisCore.Name, Idris.LDecl)] -> m Program
 generate definitions = do
-  functions <- traverse TopLevel.generate definitions
-  let mainName = Variable.generate (IdrisCore.sMN 0 "runMain")
-  let start = Call mainName []
+  let unusedNames = definitions & map fst & toUnusedNames
+  let mainName = IdrisCore.sMN 0 "runMain"
+  let mainVar = Variable.generate mainName
+  let start = Call mainVar []
+  (allFunctions, unused) <-
+    flip runStateT unusedNames $ do
+      setUsed mainName -- we set it used because the call is generated already
+      traverse TopLevel.generate definitions
+  let functions = filterUnused allFunctions unused
   let statements = functions <> [start]
   pure $ Program statements

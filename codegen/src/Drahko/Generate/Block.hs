@@ -14,7 +14,7 @@ import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadIO m => (Expression -> Statement) -> Idris.LExp -> m Block
+generate :: MonadState UnusedNames m => MonadIO m => (Expression -> Statement) -> Idris.LExp -> m Block
 generate returning expression = case expression of
   Idris.LApp _ expr args -> do
     ahkExpr <- genExpr expr
@@ -38,6 +38,7 @@ generate returning expression = case expression of
   Idris.LConst constExpr ->
     pure [returning $ Constant.generate constExpr]
   Idris.LV name -> do
+    setUsed name
     let ahkName = Variable.generate name
     pure [returning ahkName]
   Idris.LCase _ expr alts -> do
@@ -65,8 +66,9 @@ generate returning expression = case expression of
           ""
         ]
 
-genExpr :: Monad m => Idris.LExp -> m Expression
-genExpr (Idris.LV name) =
+genExpr :: MonadState UnusedNames m => Idris.LExp -> m Expression
+genExpr (Idris.LV name) = do
+  setUsed name
   pure $ Variable.generate name
 genExpr (Idris.LApp _ expr args) =
   if null args
@@ -79,6 +81,7 @@ genExpr (Idris.LCon _ _ name args) =
   if Idris.showCG name == "TheWorld"
     then pure (Literal $ String "")
     else do
+      setUsed name
       let ahkName = Variable.generate name
       ahkArgs <- traverse genExpr args
       pure (Apply ahkName ahkArgs)
@@ -100,7 +103,7 @@ genExpr e =
         ""
       ]
 
-genCases :: MonadIO m => (Expression -> Statement) -> Expression -> [Idris.LAlt] -> m Block
+genCases :: MonadState UnusedNames m => MonadIO m => (Expression -> Statement) -> Expression -> [Idris.LAlt] -> m Block
 genCases returning caseExpr alternatives = do
   ahkCases <- foldM generateBranches ([], []) alternatives
   case ahkCases of
@@ -110,7 +113,7 @@ genCases returning caseExpr alternatives = do
       let elseBlock = if null defaultBlock then Nothing else Just defaultBlock
       pure [Condition (ConditionalStatement ifCase elseIfCases elseBlock)]
   where
-    generateBranches :: MonadIO m => ([ConditionalCase], Block) -> Idris.LAlt -> m ([ConditionalCase], Block)
+    generateBranches :: MonadState UnusedNames m => MonadIO m => ([ConditionalCase], Block) -> Idris.LAlt -> m ([ConditionalCase], Block)
     generateBranches (cases, defaultCase) sAlt = case sAlt of
       Idris.LConstCase t expr ->
         error $

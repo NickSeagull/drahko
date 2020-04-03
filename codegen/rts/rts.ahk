@@ -12,12 +12,7 @@ class __drahko
 
   hotkey(hk, fun)
   {
-    static funs := {}
-    funs[hk] := Func(fun)
-    Hotkey, %hk%, Hotkey_Handle
-    return
-  Hotkey_Handle:
-    funs[A_ThisHotkey].("")
-    return
+    fn := fun.bind("","")
+    Hotkey, %hk%, %fn%
   }
 }

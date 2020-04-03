@@ -4,6 +4,7 @@ import Control.Monad (foldM)
 import Data.Data (toConstr)
 import Drahko.Generate.Common
 import qualified Drahko.Generate.Constant as Constant
+import Drahko.Generate.Name (ToName (..))
 import qualified Drahko.Generate.Orphans ()
 import Drahko.Generate.Orphans ()
 import qualified Drahko.Generate.PrimFunction as PrimFunction
@@ -14,7 +15,13 @@ import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-generate :: MonadState UnusedNames m => MonadIO m => (Expression -> Statement) -> Idris.LExp -> m Block
+generate ::
+  MonadState UnusedNames m =>
+  MonadReader [Name] m =>
+  MonadIO m =>
+  (Expression -> Statement) ->
+  Idris.LExp ->
+  m Block
 generate returning expression = case expression of
   Idris.LApp _ expr args -> do
     ahkExpr <- genExpr expr
@@ -66,10 +73,19 @@ generate returning expression = case expression of
           ""
         ]
 
-genExpr :: MonadState UnusedNames m => Idris.LExp -> m Expression
+genExpr ::
+  MonadState UnusedNames m =>
+  MonadReader [Name] m =>
+  Idris.LExp ->
+  m Expression
 genExpr (Idris.LV name) = do
-  setUsed name
-  pure $ Variable.generate name
+  argNames <- ask
+  let ahkName = toName name
+  if ahkName `elem` argNames
+    then pure $ Variable.generate name
+    else do
+      setUsed name
+      pure $ Variable.thisScoped name
 genExpr (Idris.LApp _ expr args) =
   if null args
     then genExpr expr
@@ -103,7 +119,14 @@ genExpr e =
         ""
       ]
 
-genCases :: MonadState UnusedNames m => MonadIO m => (Expression -> Statement) -> Expression -> [Idris.LAlt] -> m Block
+genCases ::
+  MonadState UnusedNames m =>
+  MonadReader [Name] m =>
+  MonadIO m =>
+  (Expression -> Statement) ->
+  Expression ->
+  [Idris.LAlt] ->
+  m Block
 genCases returning caseExpr alternatives = do
   ahkCases <- foldM generateBranches ([], []) alternatives
   case ahkCases of
@@ -113,7 +136,13 @@ genCases returning caseExpr alternatives = do
       let elseBlock = if null defaultBlock then Nothing else Just defaultBlock
       pure [Condition (ConditionalStatement ifCase elseIfCases elseBlock)]
   where
-    generateBranches :: MonadState UnusedNames m => MonadIO m => ([ConditionalCase], Block) -> Idris.LAlt -> m ([ConditionalCase], Block)
+    generateBranches ::
+      MonadState UnusedNames m =>
+      MonadReader [Name] m =>
+      MonadIO m =>
+      ([ConditionalCase], Block) ->
+      Idris.LAlt ->
+      m ([ConditionalCase], Block)
     generateBranches (cases, defaultCase) sAlt = case sAlt of
       Idris.LConstCase t expr ->
         error $
@@ -133,7 +162,12 @@ genCases returning caseExpr alternatives = do
         block <- generate returning expr
         pure (cases, defaultCase <> block)
 
-genForeign :: MonadIO m => (Expression -> Statement) -> Idris.FDesc -> [Expression] -> m Block
+genForeign ::
+  MonadIO m =>
+  (Expression -> Statement) ->
+  Idris.FDesc ->
+  [Expression] ->
+  m Block
 genForeign returning (Idris.FApp fName fArg) params = do
   putTextLn ("FOREIGN CALL: " <> show fName <> " - " <> show fArg)
   putTextLn ("ARGS: " <> show params)

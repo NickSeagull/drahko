@@ -13,5 +13,5 @@ generate (_, Idris.LConstructor {}) = pure NoOp
 generate (functionName, Idris.LFun _ _ args definition) = do
   let funName = toName functionName
   let funArgs = toName <$> args
-  funBlock <- Block.generate Return definition
+  funBlock <- flip runReaderT funArgs $ Block.generate Return definition
   pure $ Function funName funArgs funBlock

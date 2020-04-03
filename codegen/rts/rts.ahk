@@ -1,5 +1,6 @@
 class __drahko
 {
+  static funs := {}
   putStr(x)
   {
     MsgBox % x
@@ -12,7 +13,8 @@ class __drahko
 
   hotkey(hk, fun)
   {
-    fn := fun.bind("","")
+    this.funs[hk] := fun
+    fn := this.funs[hk].bind("","")
     Hotkey, %hk%, %fn%
   }
 }

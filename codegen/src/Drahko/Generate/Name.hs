@@ -8,38 +8,50 @@ import qualified IRTS.Lang as Idris
 import qualified Idris.Core.TT as Idris
 import Relude
 
-notAllowedSymbols :: String
-notAllowedSymbols = "{}[]()"
+class ToName a where
+  toName :: a -> Name
 
-fromVar :: Idris.LVar -> Name
-fromVar (Idris.Glob idrisName) =
-  fromName idrisName
-fromVar (Idris.Loc idrisRegistry) =
-  loc idrisRegistry
+instance ToName Idris.LVar where
+  toName (Idris.Glob idrisName) =
+    toName idrisName
+  toName (Idris.Loc idrisRegistry) =
+    toName idrisRegistry
 
-loc :: Int -> Name
-loc i = new ("r" <> show i :: Text)
+instance ToName Int where
+  toName i =
+    toName (registerPrefix <> show i)
 
-fromName :: Idris.Name -> Name
-fromName idrisName =
-  new (Idris.showCG idrisName)
+instance ToName Idris.Name where
+  toName idrisName =
+    toName (Idris.showCG idrisName)
 
-new :: ToText a => a -> Name
-new s = do
-  let removeSymbols =
-        Text.filter (`notElem` notAllowedSymbols)
-  let replaceDots =
-        Text.replace "." "__"
-  let replaceDashes =
-        Text.replace "-" "_"
-  let encodedName =
-        toText s
-          & removeSymbols
-          & replaceDots
-          & replaceDashes
-  Name encodedName
+instance ToName String where
+  toName = toName . toText
+
+instance ToName Text where
+  toName s = do
+    let removeSymbols =
+          Text.filter (`notElem` notAllowedSymbols)
+    let replaceDots =
+          Text.replace "." "__"
+    let replaceDashes =
+          Text.replace "-" "_"
+    let encodedName =
+          removeSymbols s
+            & replaceDots
+            & replaceDashes
+    Name encodedName
 
 random :: MonadIO m => m Name
 random = do
   uuid <- liftIO UUID.nextRandom
-  pure (new $ "f" <> UUID.toText uuid)
+  pure (toName $ programPrefix <> UUID.toText uuid)
+
+notAllowedSymbols :: String
+notAllowedSymbols = "{}[]()"
+
+registerPrefix :: Text
+registerPrefix = "r"
+
+programPrefix :: Text
+programPrefix = "f"

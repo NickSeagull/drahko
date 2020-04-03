@@ -1,13 +1,9 @@
 class __drahko
 {
+  static funs := {}
   putStr(x)
   {
     MsgBox % x
-  }
-
-  TheWorld()
-  {
-    return ""
   }
 
   crash(msg)
@@ -15,21 +11,10 @@ class __drahko
     throw Exception(msg, -1)
   }
 
-  showreg(name, register)
+  hotkey(hk, fun)
   {
-    MsgBox, % "REGISTER ----- " . name . "`n" . this.regstr(register)
-  }
-
-  regstr(register)
-  {
-    if (register.Length())
-    {
-      For k, v in register {
-        msg .= "[" . k . "] => `n`t" . this.regstr(v) . "`n"
-      }
-      return msg
-    } else {
-      return register
-    }
+    this.funs[hk] := fun
+    fn := this.funs[hk].bind("","")
+    Hotkey, %hk%, %fn%
   }
 }

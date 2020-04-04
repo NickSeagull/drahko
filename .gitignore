@@ -1,5 +1,7 @@
 dist-newstyle
 .stack-work
 *.cabal
+/target
 *.ibc
+*.o
 examples/*.ahk

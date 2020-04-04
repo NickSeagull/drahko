@@ -169,12 +169,9 @@ genForeign ::
   Idris.FDesc ->
   [Expression] ->
   m Block
-genForeign returning (Idris.FApp fName fArg) params = do
-  putTextLn ("FOREIGN CALL: " <> show fName <> " - " <> show fArg)
-  putTextLn ("ARGS: " <> show params)
+genForeign returning (Idris.FApp fName fArg) params =
   case (Idris.showCG fName, fArg, params) of
-    ("AHK_Command", [Idris.FStr commandName], p) -> do
-      putTextLn ("ARGS: " <> show params)
+    ("AHK_Command", [Idris.FStr commandName], p) ->
       pure [Command (Name $ toText commandName) p]
     ("AHK_Function", [Idris.FStr functionName], p) -> do
       -- we don't escape the name to let the user specify whatever

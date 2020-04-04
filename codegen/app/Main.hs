@@ -17,7 +17,7 @@ data Opts
 
 showUsage :: IO ()
 showUsage = do
-  putTextLn "Usage: idris-ahk <ibc-files> [-o <output-file>]"
+  putTextLn "Usage: idris-autohotkey <ibc-files> [-o <output-file>]"
   exitSuccess
 
 getOpts :: IO Opts

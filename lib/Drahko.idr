@@ -5,4 +5,4 @@ import public Drahko.FFI
 
 public export
 drahko_version : String
-drahko_version = "0.0.1"
+drahko_version = "0.0.0"

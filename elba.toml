@@ -1,6 +1,6 @@
 [package]
 name = "drahko/drahko"
-version = "0.0.1"
+version = "0.0.0"
 authors = []
 
 [dependencies]

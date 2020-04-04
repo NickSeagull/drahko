@@ -17,30 +17,30 @@ import Relude
 
 generate ::
   MonadState UnusedNames m =>
-  MonadReader [Name] m =>
   MonadIO m =>
+  [Name] ->
   (Expression -> Statement) ->
   Idris.LExp ->
   m Block
-generate returning expression = case expression of
-  Idris.LApp _ expr args -> do
-    ahkExpr <- genExpr expr
-    ahkArgs <- traverse genExpr args
-    pure [returning $ Apply ahkExpr ahkArgs]
+generate argNames returning expression = case expression of
+  e@Idris.LApp {} -> do
+    ahkExpr <- genExpr argNames e
+    pure [returning ahkExpr]
   Idris.LNothing ->
     pure [returning nullExpr]
   Idris.LOp primFn args -> do
-    ahkArgs <- traverse genExpr args
+    ahkArgs <- traverse (genExpr argNames) args
     let func = PrimFunction.generate primFn ahkArgs
     pure [returning func]
   Idris.LForeign _ foreignName params -> do
     -- _ <- error ("\n\nLFOREIGN + \n\n" <> show params <> "\n\n" <> show foreignName)
-    ahkArgs <- traverse (genExpr . snd) params
+    ahkArgs <- traverse (genExpr argNames . snd) params
     genForeign returning foreignName ahkArgs
   Idris.LLet name expr restExpressions -> do
     let ahkName = Variable.generate name
-    ahkBind <- generate (Assignment ahkName) expr
-    ahkRest <- generate returning restExpressions
+    let newScope = toName name : argNames
+    ahkBind <- generate newScope (Assignment ahkName) expr
+    ahkRest <- generate newScope returning restExpressions
     pure $ ahkBind <> ahkRest
   Idris.LConst constExpr ->
     pure [returning $ Constant.generate constExpr]
@@ -49,15 +49,15 @@ generate returning expression = case expression of
     let ahkName = Variable.generate name
     pure [returning ahkName]
   Idris.LCase _ expr alts -> do
-    ahkExpr <- genExpr expr
-    genCases returning ahkExpr alts
+    ahkExpr <- genExpr argNames expr
+    genCases argNames returning ahkExpr alts
   Idris.LForce (Idris.LLazyApp name args) ->
-    generate returning (Idris.LApp False (Idris.LV name) args)
+    generate argNames returning (Idris.LApp False (Idris.LV name) args)
   Idris.LForce e ->
-    generate returning e
+    generate argNames returning e
   Idris.LCon _ _ name args -> do
     let ahkName = Variable.generate name
-    ahkArgs <- traverse genExpr args
+    ahkArgs <- traverse (genExpr argNames) args
     pure [returning $ Apply ahkName ahkArgs]
   otherExpression ->
     error $
@@ -75,37 +75,39 @@ generate returning expression = case expression of
 
 genExpr ::
   MonadState UnusedNames m =>
-  MonadReader [Name] m =>
+  [Name] ->
   Idris.LExp ->
   m Expression
-genExpr (Idris.LV name) = do
-  argNames <- ask
+genExpr argNames (Idris.LV name) = do
   let ahkName = toName name
   if ahkName `elem` argNames
     then pure $ Variable.generate name
     else do
       setUsed name
       pure $ Variable.thisScoped name
-genExpr (Idris.LApp _ expr args) =
+genExpr argNames (Idris.LApp _ expr args) =
   if null args
-    then genExpr expr
+    then genExpr argNames expr
     else do
-      ahkExpr <- genExpr expr
-      ahkArgs <- traverse genExpr args
-      pure (Apply ahkExpr ahkArgs)
-genExpr (Idris.LCon _ _ name args) =
+      ahkExpr <- genExpr argNames expr
+      ahkArgs <- traverse (genExpr argNames) args
+      pure (scopedCall argNames ahkExpr ahkArgs)
+genExpr argNames (Idris.LCon _ _ name args) =
   if Idris.showCG name == "TheWorld"
     then pure (Literal $ String "")
     else do
       setUsed name
       let ahkName = Variable.generate name
-      ahkArgs <- traverse genExpr args
+      ahkArgs <- traverse (genExpr argNames) args
       pure (Apply ahkName ahkArgs)
-genExpr (Idris.LConst const') =
+genExpr _ (Idris.LConst const') =
   pure (Constant.generate const')
-genExpr Idris.LNothing =
+genExpr _ Idris.LNothing =
   pure (Literal $ String "")
-genExpr e =
+genExpr argNames (Idris.LOp primFn args) = do
+  ahkArgs <- traverse (genExpr argNames) args
+  pure (PrimFunction.generate primFn ahkArgs)
+genExpr _ e =
   error $
     unlines
       [ "",
@@ -121,13 +123,13 @@ genExpr e =
 
 genCases ::
   MonadState UnusedNames m =>
-  MonadReader [Name] m =>
   MonadIO m =>
+  [Name] ->
   (Expression -> Statement) ->
   Expression ->
   [Idris.LAlt] ->
   m Block
-genCases returning caseExpr alternatives = do
+genCases argNames returning caseExpr alternatives = do
   ahkCases <- foldM generateBranches ([], []) alternatives
   case ahkCases of
     ([], block) ->
@@ -138,7 +140,6 @@ genCases returning caseExpr alternatives = do
   where
     generateBranches ::
       MonadState UnusedNames m =>
-      MonadReader [Name] m =>
       MonadIO m =>
       ([ConditionalCase], Block) ->
       Idris.LAlt ->
@@ -156,10 +157,10 @@ genCases returning caseExpr alternatives = do
         let letPairs = zip [2 .. length args + 1] [lv ..]
         let letProject (i, v) = Assignment (Variable.generate v) (Projection caseExpr (Literal $ Integer $ fromIntegral i))
         let lets = map letProject letPairs
-        block <- generate returning expr
+        block <- generate argNames returning expr
         pure (cases <> [ConditionalCase test (lets <> block)], defaultCase)
       Idris.LDefaultCase expr -> do
-        block <- generate returning expr
+        block <- generate argNames returning expr
         pure (cases, defaultCase <> block)
 
 genForeign ::
@@ -191,3 +192,28 @@ genForeign returning (Idris.FApp fName fArg) params = do
           ]
 genForeign _ other _ =
   error $ unlines ["out of the case", show other]
+
+getName :: Expression -> Name
+getName = \case
+  Variable n -> n
+  Apply e _ -> getName e
+  _ -> ""
+
+scopedCall :: [Name] -> Expression -> [Expression] -> Expression
+scopedCall scope nameExpr args =
+  if getName nameExpr `elem` scope
+    then thisCall nameExpr args
+    else Apply nameExpr (args <> [nullExpr])
+
+thisCall :: Expression -> [Expression] -> Expression
+thisCall nameExpr args = do
+  let this = Variable.generate ("this" :: Text)
+  DotAccess
+    nameExpr
+    ( DotAccess
+        (Apply (Variable.generate ("bind" :: Text)) (this : args))
+        ( Apply
+            (Variable.generate ("call" :: Text))
+            []
+        )
+    )

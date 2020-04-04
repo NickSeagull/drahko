@@ -1,7 +1,21 @@
+# Codegen
 dist-newstyle
 .stack-work
 *.cabal
+examples/*.ahk
+
+# Standard Library
 /target
 *.ibc
 *.o
-examples/*.ahk
+
+# Doc Site
+.DS_Store
+node_modules
+docsite/lib/core/metadata.js
+docsite/lib/core/MetadataBlog.js
+docsite/website/translated_docs
+docsite/website/build/
+docsite/website/yarn.lock
+docsite/website/node_modules
+docsite/website/i18n/*

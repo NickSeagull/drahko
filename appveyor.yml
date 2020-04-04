@@ -27,4 +27,18 @@ before_build:
 
 build_script:
   - stack build
-  - stack test
+
+before_package:
+  - mv "$(stack path --local-install-root)/bin/*.exe" .
+
+deploy:
+  description: "Release description"
+  provider: GitHub
+  auth_token:
+    secure: S/xfkviXL/1CCRkqnYt31xNbr7AV9KKjUdiaDswt6ly++9yQskxRZnPo84ofnfDi
+  artifact: /.*\.exe/
+  draft: false
+  prerelease: false
+  on:
+    branch: master # release from master branch only
+    APPVEYOR_REPO_TAG: true # deploy on tag push only

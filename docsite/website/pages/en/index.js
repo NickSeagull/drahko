@@ -122,14 +122,14 @@ class Index extends React.Component {
     );
 
     const Description = () => (
-      <Block background="dark">
+      <Block>
         {[
           {
             content:
               "This is another description of how this project is useful",
             image: `${baseUrl}img/undraw_note_list.svg`,
             imageAlign: "right",
-            title: "Description",
+            title: "What can Drahko do for me?",
           },
         ]}
       </Block>
@@ -202,12 +202,7 @@ class Index extends React.Component {
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
-          <Features />
-          <FeatureCallout />
-          <LearnHow />
-          <TryOut />
           <Description />
-          <Showcase />
         </div>
       </div>
     );

@@ -13,7 +13,7 @@ const users = [];
 
 const siteConfig = {
   title: "Drahko", // Title for your website.
-  tagline: "A modern Windows automation suite",
+  tagline: "Boost your efficiency: Make your computer work for you.",
   url: "https://drahko.github.io", // Your website URL
   baseUrl: "/", // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
@@ -29,8 +29,8 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    { doc: "doc1", label: "Docs" },
-    { doc: "doc4", label: "API" },
+    { doc: "doc-install", label: "Documentation" },
+    { doc: "ref-core", label: "Reference" },
     { page: "help", label: "Help" },
     // { blog: true, label: "Blog" },
   ],

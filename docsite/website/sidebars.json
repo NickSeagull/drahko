@@ -1,0 +1,8 @@
+{
+  "docs": {
+    "Getting Started": ["doc-main"]
+  },
+  "docs-other": {
+    "Drahko Reference": ["ref-core"]
+  }
+}

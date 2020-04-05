@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Getting Started": ["doc-install"]
+    "Getting Started": ["doc-main"]
   },
   "docs-other": {
     "Drahko Reference": ["ref-core"]

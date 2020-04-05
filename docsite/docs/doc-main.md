@@ -1,6 +1,6 @@
 ---
-id: doc-install
-title: Installation
+id: doc-main
+title: Welcome to the Drahko documentation
 ---
 
 Check the [documentation](https://docusaurus.io) for how to use Docusaurus.

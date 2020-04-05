@@ -66,7 +66,7 @@ class HomeSplash extends React.Component {
           </h1>
           <h2>{siteConfig.tagline}</h2>
           <PromoSection>
-            <Button href={docUrl("doc-install")}>Get started</Button>
+            <Button href={docUrl("doc-main")}>Get started</Button>
             <Button href="https://discord.gg/dtqJ6PC">Discord</Button>
             <Button href="https://github.com/drahko/drahko">GitHub</Button>
           </PromoSection>
@@ -88,7 +88,7 @@ class Index extends React.Component {
         background={props.background}
       >
         <GridBlock
-          align={props.align ?? "left"}
+          align={props.align ? props.align : "left"}
           contents={props.children}
           layout={props.layout}
         />
@@ -122,7 +122,7 @@ class Index extends React.Component {
     );
 
     const Description = () => (
-      <div class="custom-description">
+      <div>
         <Block>
           {[
             {
@@ -199,7 +199,7 @@ patches to fix bugs, and even help with the documentation website that you are r
 Drahko is the ultimate automation tool for your
 PC. Start using it and see it for yourself!
 
-[Go to documentation](${siteConfig.docsUrl}/doc-install)`,
+[Go to documentation](${siteConfig.docsUrl}/doc-main)`,
             imageAlign: "top",
           },
         ]}

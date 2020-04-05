@@ -66,9 +66,9 @@ class HomeSplash extends React.Component {
           </h1>
           <h2>{siteConfig.tagline}</h2>
           <PromoSection>
-            <Button href="#try">Try It Out</Button>
-            <Button href={docUrl("doc1.html")}>Example Link</Button>
-            <Button href={docUrl("doc2.html")}>Example Link 2</Button>
+            <Button href={docUrl("doc-install")}>Get started</Button>
+            <Button href="https://discord.gg/dtqJ6PC">Discord</Button>
+            <Button href="https://github.com/drahko/drahko">GitHub</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -88,7 +88,7 @@ class Index extends React.Component {
         background={props.background}
       >
         <GridBlock
-          align="center"
+          align={props.align ?? "left"}
           contents={props.children}
           layout={props.layout}
         />
@@ -122,50 +122,110 @@ class Index extends React.Component {
     );
 
     const Description = () => (
-      <Block>
-        {[
-          {
-            content:
-              "This is another description of how this project is useful",
-            image: `${baseUrl}img/undraw_note_list.svg`,
-            imageAlign: "right",
-            title: "What can Drahko do for me?",
-          },
-        ]}
-      </Block>
+      <div class="custom-description">
+        <Block>
+          {[
+            {
+              title: "What is Drahko?",
+              content: `Drahko is a desktop automation tool for Windows. It allows you to automate applications and websites by writing **Drahko scripts**.
+You can automate any workflow you want, be it simple as pressing keys in sequence, or complex like retrieving
+data from the internet, transforming it, and saving it into another place.
+              `,
+              image: `${baseUrl}img/undraw_online_test.svg`,
+              imageAlign: "right",
+            },
+          ]}
+        </Block>
+        <Block>
+          {[
+            {
+              title: "Automate any task",
+              content: `
+If you can perform it manually, you can automate it with Drahko. Typing your full name, opening Twitter, controlling Spotify,
+creating reports, filtering the clipboard...
+
+Drahko comes with a lot of powerful features:
+
+* Key bindings
+* Creation of user interfaces
+* Access to file system
+* Many more!
+              `,
+              image: `${baseUrl}img/undraw_dev_focus.svg`,
+              imageAlign: "left",
+            },
+          ]}
+        </Block>
+        <Block>
+          {[
+            {
+              title: "Based on the best technologies",
+              content: `
+Drahko is based on the battle-tested [AutoHotkey](https://www.autohotkey.com/) software, which has been used for many years by thousands of users to automate
+their computing experience.
+
+At it's core, Drahko connects AutoHotkey with [Idris](https://www.idris-lang.org/), a cutting-edge programming language that removes most of the common errors
+programmers face daily. Add some nice utilities and sugar on top of that, and you have the ultimate automation experience for Windows.
+              `,
+              image: `${baseUrl}img/undraw_lost_online.svg`,
+              imageAlign: "right",
+            },
+          ]}
+        </Block>
+        <Block>
+          {[
+            {
+              title: "Open Source",
+              content: `
+Drahko is 100% open source and **free**, which means that **you** have the control of the software you are running on your computer.
+This enables collaboration between developers around the world. Everyone has voice in this project, and can request and create features, submit
+patches to fix bugs, and even help with the documentation website that you are reading right now.
+              `,
+              image: `${baseUrl}img/undraw_open_source.svg`,
+              imageAlign: "left",
+            },
+          ]}
+        </Block>
+      </div>
     );
 
     const LearnHow = () => (
-      <Block background="light">
+      <Block align="center" background="light">
         {[
           {
-            content:
-              "Each new Docusaurus project has **randomly-generated** theme colors.",
-            image: `${baseUrl}img/undraw_youtube_tutorial.svg`,
-            imageAlign: "right",
-            title: "Randomly Generated Theme Colors",
+            title: "Get started now!",
+            content: `Why don't you give Drahko a try? It will always be free, with no strings attached.
+
+Drahko is the ultimate automation tool for your
+PC. Start using it and see it for yourself!
+
+[Go to documentation](${siteConfig.docsUrl}/doc-install)`,
+            imageAlign: "top",
           },
         ]}
       </Block>
     );
 
     const Features = () => (
-      <Block layout="fourColumn">
-        {[
-          {
-            content: "This is the content of my feature",
-            image: `${baseUrl}img/undraw_react.svg`,
-            imageAlign: "top",
-            title: "Feature One",
-          },
-          {
-            content: "The content of my second feature",
-            image: `${baseUrl}img/undraw_operating_system.svg`,
-            imageAlign: "top",
-            title: "Feature Two",
-          },
-        ]}
-      </Block>
+      <div>
+        <Block align="center">
+          {[
+            {
+              title: "[Join us on Discord](https://discord.gg/dtqJ6PC)",
+              content: "",
+              image: `${baseUrl}img/discord-icon.svg`,
+              imageAlign: "top",
+            },
+            {
+              title:
+                "[Follow the development on GitHub](https://github.com/drahko/drahko)",
+              content: "",
+              image: `${baseUrl}img/github-icon.svg`,
+              imageAlign: "top",
+            },
+          ]}
+        </Block>
+      </div>
     );
 
     const Showcase = () => {
@@ -203,6 +263,8 @@ class Index extends React.Component {
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
           <Description />
+          <LearnHow />
+          <Features />
         </div>
       </div>
     );

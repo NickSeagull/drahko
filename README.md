@@ -1,16 +1,12 @@
 <h1 style="text-align:center"><img src="./assets/logo.png" /></h1>
 
-> The worst programming language just got a lot better
+> Boost your efficiency: Make your computer work for you.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b5r11wcau0upomgv?svg=true)](https://ci.appveyor.com/project/NickSeagull/drahko)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![Apache-2.0 license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Mergify Status][mergify-status]][mergify]
 [![Hintman](https://img.shields.io/badge/%F0%9F%94%ABhintman-enabled-blueviolet)](https://github.com/kowainik/hintman)
-
-> ⚠ **DISCLAIMER:** This project is in it's very early days, and it is still
-> in an unstable state, not yet usable. That's the main reason why no releases
-> have been made yet.
 
 Drahko is a Windows automation framework based on [AutoHotkey](autohotkey.com),
 a widely used and stable automation solution.
@@ -32,7 +28,7 @@ main : Promise ()
 main = msgBox "Hello world!"
 ```
 
-Want to know more? Head over to [the documentation site](https://github.com/NickSeagull/drahko/issues/11.)
+Want to know more? Head over to [the documentation site](https://github.com/NickSeagull/drahko/issues/11)
 
 ## ⌨ Improvements over AutoHotkey
 

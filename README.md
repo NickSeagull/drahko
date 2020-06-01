@@ -1,3 +1,7 @@
+# This project is unmaintained:
+
+> The project was an attempt to take advantage of the AutoHotkey libraries while having the power of Idris. After many tests, AutoHotkey is slower than I initially thought, so some code that is generated ends up being very slow. Might be useful for quick hotkeys, but is not useful when having sticky-key type hotkeys (hotkeys that are `letter + letter` rather than `modfiier + letter`) as the keyboard typing becomes very slow.
+
 <h1 style="text-align:center"><img src="./assets/logo.png" /></h1>
 
 > Boost your efficiency: Make your computer work for you.

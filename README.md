@@ -64,6 +64,7 @@ In addition to that, Drahko:
 3. Build the project
 
    ```text
+   stack exec -- pacman -Sy make
    stack build
    ```
 

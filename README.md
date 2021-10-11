@@ -8,6 +8,8 @@
 [![Mergify Status][mergify-status]][mergify]
 [![Hintman](https://img.shields.io/badge/%F0%9F%94%ABhintman-enabled-blueviolet)](https://github.com/kowainik/hintman)
 
+# Note: Drahko is pre-alpha software, which means that is in development, and it hasn't been thoroughly tested yet
+
 Drahko is a Windows automation framework based on [AutoHotkey](autohotkey.com),
 a widely used and stable automation solution.
 

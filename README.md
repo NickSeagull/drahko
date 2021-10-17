@@ -81,7 +81,7 @@ In addition to that, Drahko:
 7. Try to compile the example
 
    ```text
-   stack exec -- idris -i lib .\examples\HelloWorld.idr --codegen autohotkey -o .\examples\HelloWorld.ahk
+   stack exec -- idris -i .\target\lib .\examples\HelloWorld.idr --codegen autohotkey -o .\examples\HelloWorld.ahk
    ```
 
 ## 🙏 Acknowledgements

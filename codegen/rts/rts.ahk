@@ -17,4 +17,11 @@ class __drahko
     fn := this.funs[hk].bind("","")
     Hotkey, %hk%, %fn%
   }
+
+  _loop(fun)
+  {
+    loop {
+      fun()
+    }
+  }
 }

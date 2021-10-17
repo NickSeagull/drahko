@@ -1,4 +1,4 @@
 [[packages]]
-id = 'drahko/drahko@dir+C:\Users\nikit\dev\drahko'
-version = '0.0.0'
+id = 'drahko/drahko@dir+C:\Users\nikit\Projects\drahko'
+version = '0.0.1'
 dependencies = []

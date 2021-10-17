@@ -68,7 +68,17 @@ In addition to that, Drahko:
    stack build
    ```
 
-4. Try to compile the example
+4. Download [`elba`](https://github.com/elba/elba) and put it in your path
+
+5. Build the Drahko `lib`
+
+   ```text
+   stack exec elba build
+   ```
+
+6. Move all `.ibc` files from `target\lib` to `lib`
+
+7. Try to compile the example
 
    ```text
    stack exec -- idris -i lib .\examples\HelloWorld.idr --codegen autohotkey -o .\examples\HelloWorld.ahk

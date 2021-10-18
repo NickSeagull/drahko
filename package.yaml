@@ -22,6 +22,7 @@ dependencies:
   - unordered-containers
   - directory
   - filepath
+  - hashable
   - haskeline >= 0.7
   - mainland-pretty
   - mtl

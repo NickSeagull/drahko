@@ -34,7 +34,7 @@ cgMain opts = do
   _ <- loadInputs (inputs opts) Nothing
   mainProg <- elabMain
   ir <- compile (Via IBCFormat "ahk") (output opts) (Just mainProg)
-  runIO $ codegenAHK ir
+  runIO $ codegenAHKSimple ir
 
 main :: IO ()
 main = do

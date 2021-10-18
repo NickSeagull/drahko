@@ -1,5 +1,9 @@
-module Drahko where
+module Drahko (
+  codegenAHK,
+  codegenAHKSimple
+) where
 
+import Drahko.StackBased
 import qualified Drahko.Generate.Program as Program
 import qualified Drahko.RTS as RTS
 import qualified Drahko.Render as Render
